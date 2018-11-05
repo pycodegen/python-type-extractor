@@ -8,11 +8,6 @@ from .ClassFound import ClassFound
 from .DuplicateNameFound import DuplicateNameFound
 from .FunctionFound import FunctionFound
 
-dummy_fields = dir(object())
-dummy_fields.extend([
-    '__weakref__',
-])
-
 def is_builtin(something):
     return inspect.getmodule(something) is not builtins
 
@@ -24,9 +19,6 @@ class CollectType:
     def add_function(self, options):
         def add_function_decoration(func: Callable):
             signature = inspect.getfullargspec(func)
-            # print(signature.parameters)
-            # print(signature.return_annotation)
-            # self.functions['a'] = False
             self.__process_params(signature.annotations)
             function_found = self.__to_function_found(func)
             if function_found.name in self.functions:

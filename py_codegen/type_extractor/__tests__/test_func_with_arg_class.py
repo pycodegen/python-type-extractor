@@ -1,4 +1,4 @@
-from type_extracter import CollectType
+from py_codegen.type_extractor import CollectType
 
 
 def test_func_with_arg_class():

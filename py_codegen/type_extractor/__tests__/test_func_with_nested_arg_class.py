@@ -1,6 +1,5 @@
-from typing import NamedTuple, Dict
-from type_extracter.type_extractor import CollectType
-import dataclasses
+from py_codegen.type_extractor import CollectType
+
 
 def test_func_with_arg_class():
     typeCollector = CollectType()
