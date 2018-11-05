@@ -5,3 +5,4 @@ __pycache__
 .python-version
 .vscode
 .pyre_configuration
+.pytest_cache

@@ -1,12 +1,12 @@
-from collections import OrderedDict
-from typing import Callable, Dict, NamedTuple, NewType
-import typing
-import inspect
-from dataclasses import dataclass
 import builtins
+import inspect
+from collections import OrderedDict
+from dataclasses import dataclass
+from typing import Callable, Dict
+
 from .ClassFound import ClassFound
-from .FunctionFound import FunctionFound
 from .DuplicateNameFound import DuplicateNameFound
+from .FunctionFound import FunctionFound
 
 dummy_fields = dir(object())
 dummy_fields.extend([
@@ -54,7 +54,7 @@ class CollectType:
         return processed_params
 
     def __to_class_found(self, _class):
-        _data_class = None
+        _data_class = dataclass(_class)
         argspec = inspect.getfullargspec(_data_class)
         module = inspect.getmodule(_class)
         filename = module.__file__
