@@ -1,46 +1,16 @@
 from py_codegen.type_extractor import TypeExtractor
+from py_codegen.test_fixtures.various_classes import SomeDataClass, SomeNamedTuple, SomeNormalClass
 
+def test_various_classes():
 
-def test_func_with_arg_class():
-    typeCollector = TypeExtractor()
-    class ArgClass:
-        arg1: str
-        arg2: int
+    type_extractor = TypeExtractor()
+    type_extractor.add_class(None)(SomeDataClass)
+    type_extractor.add_class(None)(SomeNormalClass)
+    type_extractor.add_class(None)(SomeNamedTuple)
+    classes = type_extractor.classes
+    classes_list = classes.values()
+    assert(classes_list.__len__() == 3)
 
-    @typeCollector.add_function(None)
-    def func_with_arg_class(a: ArgClass) -> ArgClass:
-        return a
-    import pdb;pdb.set_trace()
-    print('typeCollector.classes', typeCollector.classes)
-
-# class ChildArgClass:
-#     ca1: int
-
-# class ParentArgClass:
-#     pa1: str
-#     pa2: ChildArgClass
-
-# # @typeCollector.add_function(None)
-# # def test_func_with_nested_arg_class(pac: ParentArgClass):
-# #     return pac
-
-# # @typeCollector.add_function(None)
-# # def test(a: int, b: int) -> int:
-# #     return a + b
-
-
-# # @typeCollector.add_class(None)
-# # @dataclasses.dataclass
-# # class TestDataClass:
-# #     permissions: Dict[str, bool]
-
-# # @typeCollector.add_class(None)
-# # class TestNormalClass:
-# #     checklist: Dict[str, bool]
-
-# print(typeCollector.classes)
-
-# print("!!!")
-# import pdb; pdb.set_trace()
-# # map(lambda c: c ,typeCollector.classes)
-# # print(test(1,2))
+    functions = type_extractor.functions
+    functions_list = functions.values()
+    assert(functions_list.__len__() == 0)

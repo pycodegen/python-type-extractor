@@ -41,14 +41,16 @@ class TypeExtractor:
     def __process_param(self, value):
         if is_builtin(value):
             return value
+
+        if inspect.isfunction(value) and not is_builtin(value):
+            function_found = self.__to_function_found(value)
+            return function_found
+
         if inspect.isclass(value) and not is_builtin(value):
             # self.add_class(None)(value)
             class_found = self.__to_class_found(value)
             self.__add_class_found(class_found)
             return class_found
-        if inspect.isfunction(value) and not is_builtin(value):
-            function_found = self.__to_function_found(value)
-            return function_found
 
     def __to_class_found(self, _class):
         _data_class = dataclass(_class)
