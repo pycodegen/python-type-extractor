@@ -9,12 +9,15 @@ from .DuplicateNameFound import DuplicateNameFound
 from .FunctionFound import FunctionFound
 
 def is_builtin(something):
-    return inspect.getmodule(something) is not builtins
+    return inspect.getmodule(something) is builtins
 
-class CollectType:
-    functions: Dict[str, FunctionFound] = dict()
+class TypeExtractor:
+    functions: Dict[str, FunctionFound]
+    classes: Dict[str, ClassFound]
 
-    classes: Dict[str, ClassFound] = dict()
+    def __init__(self):
+        self.functions = dict()
+        self.classes = dict()
 
     def add_function(self, options):
         def add_function_decoration(func: Callable):
@@ -29,21 +32,23 @@ class CollectType:
                     function_found
                 )
             self.functions[function_found.name] = function_found
-            # import pdb; pdb.set_trace()
             return func
         return add_function_decoration
 
     def __process_params(self, params: OrderedDict):
-        processed_params = dict()
-        for key, value in params.items():
-            if inspect.isclass(value) and not is_builtin(value):
-                class_found = self.__to_class_found(value)
-                processed_params[key] = class_found
-            if inspect.isfunction(value):
-                function_found = self.__to_function_found(value)
-                processed_params[key] = function_found
-            print("key", key, " / value", value)
-        return processed_params
+        return {k: self.__process_param(v) for k, v in params.items()}
+
+    def __process_param(self, value):
+        if is_builtin(value):
+            return value
+        if inspect.isclass(value) and not is_builtin(value):
+            # self.add_class(None)(value)
+            class_found = self.__to_class_found(value)
+            self.__add_class_found(class_found)
+            return class_found
+        if inspect.isfunction(value) and not is_builtin(value):
+            function_found = self.__to_function_found(value)
+            return function_found
 
     def __to_class_found(self, _class):
         _data_class = dataclass(_class)
@@ -66,6 +71,7 @@ class CollectType:
         module = inspect.getmodule(func)
         filename = module.__file__
         params = self.__process_params(argspec.annotations)
+        return_type = self.__process_param(signature.return_annotation)
         func_found = FunctionFound(
             name=func.__name__,
             filePath=filename,
@@ -73,20 +79,17 @@ class CollectType:
             params=params,
             doc=func.__doc__,
             func=func,
-            return_type=signature.return_annotation,
+            return_type=return_type,
         )
         return func_found
 
-    def __to_dictionary_key(self, obj):
-        module = inspect.getmodule(obj)
-        filename = module.__file__
-        return obj.__name + '::' + filename
+    def __add_class_found(self, class_found: ClassFound):
+        self.classes[class_found.name] = class_found
 
     def add_class(self, options):
         def add_class_decoration(_class):
+            if is_builtin(_class):
+                return
             class_found = self.__to_class_found(_class)
-            self.classes[self.__to_dictionary_key(_class)] = class_found
-            import pdb;pdb.set_trace()
+            self.__add_class_found(class_found)
         return add_class_decoration
-
-    # def get_classes(self):
