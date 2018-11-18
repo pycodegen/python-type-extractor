@@ -2,11 +2,12 @@ import builtins
 import inspect
 from collections import OrderedDict
 from dataclasses import dataclass
-from typing import Callable, Dict
+from typing import Callable, Dict, Union
 
 from .ClassFound import ClassFound
 from .DuplicateNameFound import DuplicateNameFound
 from .FunctionFound import FunctionFound
+from .TypeOR import TypeOR
 
 def is_builtin(something):
     return inspect.getmodule(something) is builtins
@@ -36,21 +37,42 @@ class TypeExtractor:
         return add_function_decoration
 
     def __process_params(self, params: OrderedDict):
-        return {k: self.__process_param(v) for k, v in params.items()}
+        processed_params = {
+            key: self.__process_param(value)
+            for key, value in params.items()
+        }
+        return processed_params
 
     def __process_param(self, value):
+
         if is_builtin(value):
             return value
 
-        if inspect.isfunction(value) and not is_builtin(value):
+        elif inspect.isfunction(value):
             function_found = self.__to_function_found(value)
             return function_found
 
-        if inspect.isclass(value) and not is_builtin(value):
-            # self.add_class(None)(value)
+        elif inspect.isclass(value):
             class_found = self.__to_class_found(value)
             self.__add_class_found(class_found)
             return class_found
+
+        try:
+            if value.__origin__ is Union:
+                return self.__process_union(value)
+        except:
+            # FIXME: think what to do here...
+            pass
+
+    def __process_union(self, union):
+        assert(union.__origin__ is Union)
+        types = union.__args__
+        type_a = self.__process_param(types[0])
+        type_b = self.__process_param(types[1])
+        return TypeOR(
+            a = type_a,
+            b = type_b,
+        )
 
     def __to_class_found(self, _class):
         _data_class = dataclass(_class)
@@ -86,6 +108,8 @@ class TypeExtractor:
         return func_found
 
     def __add_class_found(self, class_found: ClassFound):
+        if class_found.name == 'ParentClass':
+            print("!!!")
         self.classes[class_found.name] = class_found
 
     def add_class(self, options):

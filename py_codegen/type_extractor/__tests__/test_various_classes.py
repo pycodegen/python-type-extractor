@@ -1,4 +1,4 @@
-from py_codegen.type_extractor import TypeExtractor
+from py_codegen.type_extractor.type_extractor import TypeExtractor
 from py_codegen.test_fixtures.various_classes import SomeDataClass, SomeNamedTuple, SomeNormalClass
 
 def test_various_classes():

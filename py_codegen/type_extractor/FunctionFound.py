@@ -1,7 +1,9 @@
 from collections import OrderedDict
 from typing import Callable, NamedTuple, Any
+from dataclasses import dataclass
 
-class FunctionFound(NamedTuple):
+@dataclass
+class FunctionFound:
     name: str
     filePath: str
     func: Callable

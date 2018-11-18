@@ -1,4 +1,8 @@
-from py_codegen.type_extractor import TypeExtractor
+from collections import OrderedDict
+
+from py_codegen.type_extractor.ClassFound import ClassFound
+from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
+from py_codegen.type_extractor.type_extractor import TypeExtractor
 
 
 def test_func_with_nested_arg_class():
@@ -20,5 +24,31 @@ def test_func_with_nested_arg_class():
     functions = type_collector.functions
     functions_list = functions.values()
 
+    cleanedup = traverse(classes[ParentClass.__name__], cleanup)
+
+    child_class = ClassFound(
+        name='ChildClass',
+        fields=OrderedDict({
+            'return': None,
+            'carg1': str,
+        }),
+        doc='',
+        filePath='',
+        raw_fields=OrderedDict(),
+    )
+    parent_class = ClassFound(
+        name="ParentClass",
+        fields=OrderedDict({
+            'return': None,
+            'parg1': str,
+            'parg2': child_class,
+        }),
+        doc='',
+        filePath='',
+        raw_fields=OrderedDict(),
+    )
+    parent_cleaned = traverse(parent_class, cleanup)
+    child_cleaned = traverse(child_class, cleanup)
+    assert(parent_cleaned == cleanedup)
     assert (classes_list.__len__() == 2)
     assert (functions_list.__len__() == 1)

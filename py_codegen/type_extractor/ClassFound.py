@@ -1,7 +1,14 @@
 from collections import OrderedDict
-from typing import NamedTuple
+from dataclasses import dataclass
 
-class ClassFound(NamedTuple):
+@dataclass
+class ClassFound:
+    # def __eq__(self, other):
+    #     if not isinstance(other, ClassFound):
+    #         return False
+    #     if self.fields != other.fields:
+    #         return False
+    #     return True
     name: str
     filePath: str
     raw_fields: OrderedDict

@@ -1,4 +1,4 @@
-from py_codegen.type_extractor import TypeExtractor
+from py_codegen.type_extractor.type_extractor import TypeExtractor
 
 def test_func_with_arg_class():
     type_collector = TypeExtractor()

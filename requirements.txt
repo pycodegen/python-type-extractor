@@ -1,0 +1,4 @@
+setuptools==39.0.1
+dataclasses==0.6
+extractor==0.5
+typing==3.6.6
