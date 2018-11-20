@@ -2,7 +2,9 @@ from collections import OrderedDict
 from typing import Callable, NamedTuple, Any
 from dataclasses import dataclass
 
-@dataclass
+@dataclass(
+    order=True,
+)
 class FunctionFound:
     name: str
     filePath: str

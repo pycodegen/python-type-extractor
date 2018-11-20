@@ -1,7 +1,10 @@
 from collections import OrderedDict
 from dataclasses import dataclass
 
-@dataclass
+
+@dataclass(
+    order=True,
+)
 class ClassFound:
     # def __eq__(self, other):
     #     if not isinstance(other, ClassFound):

@@ -1,6 +1,7 @@
 import builtins
 import inspect
 from collections import OrderedDict
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Callable, Dict, Union
 
@@ -79,7 +80,11 @@ class TypeExtractor:
         argspec = inspect.getfullargspec(_data_class)
         module = inspect.getmodule(_class)
         filename = module.__file__
-        fields = self.__process_params(argspec.annotations)
+        fields_to_process = deepcopy(argspec.annotations)
+        unwanted_keys = set(fields_to_process.keys()) - set(argspec.args)
+        for unwanted_key in unwanted_keys:
+            del fields_to_process[unwanted_key]
+        fields = self.__process_params(fields_to_process)
         class_found = ClassFound(
             name=_class.__name__,
             filePath=filename,
@@ -108,8 +113,6 @@ class TypeExtractor:
         return func_found
 
     def __add_class_found(self, class_found: ClassFound):
-        if class_found.name == 'ParentClass':
-            print("!!!")
         self.classes[class_found.name] = class_found
 
     def add_class(self, options):
