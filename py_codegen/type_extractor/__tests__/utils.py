@@ -75,6 +75,11 @@ def cleanup(node: Union[ClassFound, FunctionFound]):
     if isinstance(node, ClassFound):
         new_node = deepcopy(node)
         new_node.raw_fields = OrderedDict()
+
+        # python 3.7.2 adds 'return': None to no-return classes.
+        new_node.fields.update({
+            'return': new_node.fields.get('return')
+        })
         new_node.filePath = ''
         new_node.doc = ''
         return new_node

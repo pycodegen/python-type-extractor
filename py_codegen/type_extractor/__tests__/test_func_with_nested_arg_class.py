@@ -28,27 +28,30 @@ def test_func_with_nested_arg_class():
 
     child_class = ClassFound(
         name='ChildClass',
-        fields=OrderedDict({
+        fields={
             'return': None,
             'carg1': str,
-        }),
+        },
         doc='',
         filePath='',
         raw_fields=OrderedDict(),
+        class_raw=ChildClass,
     )
     parent_class = ClassFound(
         name="ParentClass",
-        fields=OrderedDict({
+        fields={
             'return': None,
             'parg1': str,
             'parg2': child_class,
-        }),
+        },
         doc='',
         filePath='',
         raw_fields=OrderedDict(),
+        class_raw=ParentClass
     )
     parent_cleaned = traverse(parent_class, cleanup)
     child_cleaned = traverse(child_class, cleanup)
+    import pdb;pdb.set_trace()
     assert(parent_cleaned == cleanedup)
     assert (classes_list.__len__() == 2)
     assert (functions_list.__len__() == 1)

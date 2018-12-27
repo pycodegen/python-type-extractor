@@ -10,8 +10,10 @@ from .DuplicateNameFound import DuplicateNameFound
 from .FunctionFound import FunctionFound
 from .TypeOR import TypeOR
 
+
 def is_builtin(something):
     return inspect.getmodule(something) is builtins
+
 
 class TypeExtractor:
     functions: Dict[str, FunctionFound]
@@ -87,6 +89,7 @@ class TypeExtractor:
         fields = self.__process_params(fields_to_process)
         class_found = ClassFound(
             name=_class.__name__,
+            class_raw=_class,
             filePath=filename,
             raw_fields=argspec.annotations,
             fields=fields,
