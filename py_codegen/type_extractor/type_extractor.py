@@ -1,6 +1,5 @@
 import builtins
 import inspect
-from collections import OrderedDict
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Callable, Dict, Union
@@ -39,7 +38,7 @@ class TypeExtractor:
             return func
         return add_function_decoration
 
-    def __process_params(self, params: OrderedDict):
+    def __process_params(self, params: Dict[str, Union[type, None]]):
         processed_params = {
             key: self.__process_param(value)
             for key, value in params.items()
@@ -73,8 +72,8 @@ class TypeExtractor:
         type_a = self.__process_param(types[0])
         type_b = self.__process_param(types[1])
         return TypeOR(
-            a = type_a,
-            b = type_b,
+            a=type_a,
+            b=type_b,
         )
 
     def __to_class_found(self, _class):

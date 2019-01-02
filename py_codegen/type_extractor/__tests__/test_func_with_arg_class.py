@@ -1,5 +1,6 @@
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 
+
 def test_func_with_arg_class():
     type_collector = TypeExtractor()
 
@@ -18,4 +19,3 @@ def test_func_with_arg_class():
 
     assert(classes_list.__len__() == 1)
     assert (functions_list.__len__() == 1)
-

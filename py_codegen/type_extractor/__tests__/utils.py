@@ -7,7 +7,7 @@ from py_codegen.type_extractor.FunctionFound import FunctionFound
 from py_codegen.type_extractor.TypeOR import TypeOR
 
 
-def match_class_found(original: ClassFound, other: ClassFound):
+def match_class_found(original: ClassFound, other: ClassFound) -> bool:
     _original = sanitize_class_found(original)
     _other = sanitize_class_found(other)
     pass
@@ -36,7 +36,8 @@ def traverse(
         for key, value in node.fields.items():
             if isinstance(value, TypeOR):
                 value = traverseTypeOR(value, func)
-            if isinstance(value, ClassFound) or isinstance(value, FunctionFound):
+            if isinstance(value, ClassFound) \
+                    or isinstance(value, FunctionFound):
                 value = func(value)
             node.fields[key] = value
     if isinstance(node, FunctionFound):
@@ -84,9 +85,10 @@ def cleanup(node: Union[ClassFound, FunctionFound]):
         new_node.doc = ''
         return new_node
     if isinstance(node, FunctionFound):
-        new_node = deepcopy(node)
-        new_node.filePath = ''
-        new_node.raw_params = OrderedDict()
-        new_node.doc = ''
-        return new_node
+        new_funcfound_node = deepcopy(node)
+        new_funcfound_node.filePath = ''
+        new_funcfound_node.raw_params = {}
+        new_funcfound_node.doc = None
+        new_funcfound_node.func = None    # type: ignore
+        return new_funcfound_node
     return node

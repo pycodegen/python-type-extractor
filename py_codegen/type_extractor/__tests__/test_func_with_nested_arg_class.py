@@ -50,8 +50,6 @@ def test_func_with_nested_arg_class():
         class_raw=ParentClass
     )
     parent_cleaned = traverse(parent_class, cleanup)
-    child_cleaned = traverse(child_class, cleanup)
-    import pdb;pdb.set_trace()
     assert(parent_cleaned == cleanedup)
     assert (classes_list.__len__() == 2)
     assert (functions_list.__len__() == 1)
