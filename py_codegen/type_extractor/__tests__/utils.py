@@ -10,7 +10,7 @@ from py_codegen.type_extractor.TypeOR import TypeOR
 def match_class_found(original: ClassFound, other: ClassFound) -> bool:
     _original = sanitize_class_found(original)
     _other = sanitize_class_found(other)
-    pass
+    return _original == _other
 
 
 def sanitize_class_found(class_found: ClassFound):

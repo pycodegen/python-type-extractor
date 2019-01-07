@@ -31,11 +31,21 @@ def set_params_extra(namespace: str):
 
 def get_params_extra(namespace: str) -> Callable[[FunctionFound], Optional[Dict[str, Any]]]:
     def __get_params_extra(func_found: FunctionFound):
-        return func_found.__params_extra and func_found.__params_extra.get(namespace)
+        return func_found.__params_extra and \
+               func_found.__params_extra.get(namespace)
     return __get_params_extra
 
 
-def get_return_type_extra(namespace: str):
+def set_return_type_extra(namespace: str) -> Callable[[FunctionFound, Any], None]:
+    def __set_return_type_extra(func_found: FunctionFound, extra: Any):
+        func_found.__return_type_extra = func_found.__return_type_extra or {}
+        func_found.__return_type_extra[namespace] = extra
+
+    return __set_return_type_extra
+
+
+def get_return_type_extra(namespace: str) -> Callable[[FunctionFound], Optional[Any]]:
     def __get_return_type_extra(func_found: FunctionFound):
-        pass
+        return func_found.__return_type_extra and \
+               func_found.__return_type_extra.get(namespace)
     return __get_return_type_extra
