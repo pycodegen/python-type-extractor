@@ -1,94 +1,96 @@
-from collections import OrderedDict
 from copy import deepcopy
 from typing import Union, Callable
 
+from py_codegen.type_extractor.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.ClassFound import ClassFound
 from py_codegen.type_extractor.FunctionFound import FunctionFound
 from py_codegen.type_extractor.TypeOR import TypeOR
 
 
-def match_class_found(original: ClassFound, other: ClassFound) -> bool:
-    _original = sanitize_class_found(original)
-    _other = sanitize_class_found(other)
-    return _original == _other
-
-
-def sanitize_class_found(class_found: ClassFound):
-    _original = deepcopy(class_found)
-    _original.filePath = ''
-    _original.raw_fields = {}
-    return _original
-
+NodeType = Union[ClassFound, FunctionFound, TypedDictFound, TypeOR, type]
 
 traverse_func_type = Callable[
-    [Union[ClassFound, FunctionFound]],
-    Union[ClassFound, FunctionFound]
+    [NodeType],
+    NodeType,
 ]
 
 
-def traverse(
-        node: Union[ClassFound, FunctionFound],
-        func: traverse_func_type
-):
-    node = deepcopy(node)
-    node = func(node)
+def traverse(node: NodeType, func: traverse_func_type):
     if isinstance(node, ClassFound):
-        for key, value in node.fields.items():
-            if isinstance(value, TypeOR):
-                value = traverseTypeOR(value, func)
-            if isinstance(value, ClassFound) \
-                    or isinstance(value, FunctionFound):
-                value = func(value)
-            node.fields[key] = value
+        fields = {
+            key: traverse(value, func)
+            for (key, value) in node.fields.items()
+        }
+        return func(
+            node._replace(
+                fields=fields
+            )
+        )
     if isinstance(node, FunctionFound):
-        for key, value in node.params.items():
-            if isinstance(value, TypeOR):
-                value = traverseTypeOR(value)
-                node.fields[key] = value
-            elif isinstance(value, ClassFound) or isinstance(value, FunctionFound):
-                value = func(value)
-                node.fields[key] = value
-        if isinstance(node.return_type, TypeOR):
-            node.return_type = traverseTypeOR(node.return_type, func)
-        elif isinstance(node.return_type, ClassFound) \
-                or isinstance(node.return_type, FunctionFound):
-            node.return_type = func(node.return_type)
+        params = {
+            key: traverse(value, func)
+            for (key, value) in node.params.items()
+        }
+        return_type = traverse(node.return_type, func)
+        return func(
+            node._replace(
+                params=params,
+                return_type=return_type,
+            )
+        )
+    if isinstance(node, TypedDictFound):
+        annotations = {
+            key: traverse(value, func)
+            for (key, value) in node.annotations.items()
+        }
+        return func(
+            node._replace(
+                annotations=annotations,
+            )
+        )
+    if isinstance(node, TypeOR):
+        a = traverse(node.a, func)
+        b = traverse(node.b, func)
+        return func(
+            node._replace(
+                a=a,
+                b=b
+            )
+        )
     return node
 
 
-def traverseTypeOR(
-        node: TypeOR,
-        func: traverse_func_type,
-):
-    if isinstance(node.a, ClassFound) or isinstance(node.a, FunctionFound):
-        node.a = func(node.a)
-    if isinstance(node.a, TypeOR):
-        node.a = traverseTypeOR(node.a, func)
-    if isinstance(node.b, ClassFound) or isinstance(node.b, FunctionFound):
-        node.b = func(node.b)
-    if isinstance(node.b, TypeOR):
-        node.b = traverseTypeOR(node.b, func)
-    return node
-
-
-def cleanup(node: Union[ClassFound, FunctionFound]):
-    # try:
+def cleanup(node: NodeType):
     if isinstance(node, ClassFound):
-        new_node = deepcopy(node)
-        new_node.raw_fields = OrderedDict()
+        new_fields = deepcopy(node.fields)
 
-        # python 3.7.2 adds 'return': None to no-return classes.
-        new_node.fields.update({
-            'return': new_node.fields.get('return')
-        })
-        new_node.filePath = ''
-        new_node.doc = ''
-        return new_node
+        # for python < 3.7.2 compat.
+        #   (python 3.7.2 adds 'return' on fields
+        new_fields.pop('return', None)
+        return node._replace(
+            raw_fields={},
+            class_raw=None,
+            fields=new_fields,
+            filePath='',
+            doc='',
+        )
+
     if isinstance(node, FunctionFound):
-        new_funcfound_node = deepcopy(node)
-        new_funcfound_node.filePath = ''
-        new_funcfound_node.raw_params = {}
-        new_funcfound_node.doc = None
-        new_funcfound_node.func = None    # type: ignore
-        return new_funcfound_node
+        new_params = deepcopy(node.params)
+
+        # for python < 3.7.2 compat.
+        #   (python 3.7.2 adds 'return' on fields
+        new_params.pop('return', None)
+        return node._replace(
+            filePath='',
+            raw_params={},
+            params=new_params,
+            doc=None,
+            func=None,  # type: ignore
+        )
+
+    if isinstance(node, TypedDictFound):
+        return node._replace(
+            raw=None,
+        )
     return node

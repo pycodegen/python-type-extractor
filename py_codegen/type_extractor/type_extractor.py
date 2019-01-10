@@ -4,6 +4,9 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Callable, Dict, Union
 
+from mypy_extensions import _TypedDictMeta
+
+from .TypedDictFound import TypedDictFound
 from .ClassFound import ClassFound
 from .DuplicateNameFound import DuplicateNameFound
 from .FunctionFound import FunctionFound
@@ -45,23 +48,36 @@ class TypeExtractor:
         }
         return processed_params
 
-    def __process_param(self, value):
+    def __process_param(self, typ):
 
-        if is_builtin(value):
-            return value
+        if is_builtin(typ):
+            return typ
 
-        elif inspect.isfunction(value):
-            function_found = self.__to_function_found(value)
+        elif isinstance(typ, _TypedDictMeta):
+            print('!!')
+            print(typ)
+            annotations = {
+                key: self.__process_param(value)
+                for key, value in typ.__annotations__.items()
+            }
+            return TypedDictFound(
+                annotations=annotations,
+                name=typ.__qualname__,
+                raw=typ,
+            )
+
+        elif inspect.isfunction(typ):
+            function_found = self.__to_function_found(typ)
             return function_found
 
-        elif inspect.isclass(value):
-            class_found = self.__to_class_found(value)
+        elif inspect.isclass(typ):
+            class_found = self.__to_class_found(typ)
             self.__add_class_found(class_found)
             return class_found
 
         try:
-            if value.__origin__ is Union:
-                return self.__process_union(value)
+            if typ.__origin__ is Union:
+                return self.__process_union(typ)
         except:
             # FIXME: think what to do here...
             pass

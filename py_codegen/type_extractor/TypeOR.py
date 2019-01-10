@@ -1,7 +1,6 @@
-from dataclasses import dataclass
+from typing import NamedTuple
 
 
-@dataclass
-class TypeOR:
+class TypeOR(NamedTuple):
     a: type
     b: type
