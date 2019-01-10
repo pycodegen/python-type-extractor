@@ -8,9 +8,7 @@ def test_func_with_builtin_type_args():
     type_collector = TypeExtractor()
 
     type_collector.add_function(None)(func_with_builtin_args)
-    classes_found = type_collector.classes.items()
 
-    print('type_collector.classes', type_collector.classes)
     assert type_collector.classes == {}
     func_found_cleaned = cleanup(
         type_collector.functions['func_with_builtin_args'],

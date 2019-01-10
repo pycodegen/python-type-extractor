@@ -1,4 +1,6 @@
 from py_codegen.test_fixtures.union_type_class import ClassWithUnionField
+from py_codegen.type_extractor.ClassFound import ClassFound
+from py_codegen.type_extractor.TypeOR import TypeOR
 from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 
@@ -8,10 +10,19 @@ def test_class_with_union_field():
 
     type_collector.add_class(None)(ClassWithUnionField)
 
-    classes = type_collector.classes
-    classes_list = classes.values()
+    classes = {
+        key: traverse(value, cleanup)
+        for (key, value) in type_collector.classes.items()
+    }
+    assert classes == {
+        'ClassWithUnionField': ClassFound(
+            name='ClassWithUnionField',
+            fields={
+                'cwufField1': TypeOR(
+                    a=str, b=int
+                )
+            },
+        )
+    }
     functions = type_collector.functions
-    functions_list = functions.values()
-
-    # traverse(classes_list[0], lambda node: print(node))
-
+    assert functions == {}
