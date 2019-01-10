@@ -1,3 +1,5 @@
+from py_codegen.type_extractor.ClassFound import ClassFound
+from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 from py_codegen.test_fixtures.various_classes import (
     SomeDataClass,
@@ -12,10 +14,39 @@ def test_various_classes():
     type_extractor.add_class(None)(SomeDataClass)
     type_extractor.add_class(None)(SomeNormalClass)
     type_extractor.add_class(None)(SomeNamedTuple)
-    classes = type_extractor.classes
-    classes_list = classes.values()
-    assert(classes_list.__len__() == 3)
-
+    classes = {
+        key: traverse(value, cleanup)
+        for (key, value) in type_extractor.classes.items()
+    }
+    assert classes == {
+        'SomeDataClass': ClassFound(
+            name='SomeDataClass',
+            fields={
+                'sdcArg1': int,
+                'sdcArg2': str,
+            },
+        ),
+        'Dict': ClassFound(
+            name='Dict',
+            fields={},
+        ),
+        'SomeNormalClass': ClassFound(
+            name='SomeNormalClass',
+            fields={
+                'checklist': ClassFound(
+                    name='Dict',
+                    fields={},
+                )
+            },
+        ),
+        'SomeNamedTuple': ClassFound(
+            name='SomeNamedTuple',
+            fields={
+                'sntArg1': int,
+                'sntArg2': float,
+            },
+        )
+    }
     functions = type_extractor.functions
     functions_list = functions.values()
     assert(functions_list.__len__() == 0)
