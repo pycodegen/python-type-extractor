@@ -1,7 +1,7 @@
 from py_codegen.test_fixtures.func_with_typed_dict import func_with_typed_dict
-from py_codegen.type_extractor.ClassFound import ClassFound
-from py_codegen.type_extractor.FunctionFound import FunctionFound
-from py_codegen.type_extractor.TypedDictFound import TypedDictFound
+from py_codegen.type_extractor.nodes.ClassFound import ClassFound
+from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
+from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 from py_codegen.type_extractor.__tests__.utils import cleanup, traverse
 

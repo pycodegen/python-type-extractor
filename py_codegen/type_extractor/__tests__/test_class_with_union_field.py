@@ -1,5 +1,5 @@
 from py_codegen.test_fixtures.union_type_class import ClassWithUnionField
-from py_codegen.type_extractor.ClassFound import ClassFound
+from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.TypeOR import TypeOR
 from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
 from py_codegen.type_extractor.type_extractor import TypeExtractor

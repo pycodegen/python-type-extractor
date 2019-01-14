@@ -1,5 +1,6 @@
-from py_codegen.type_extractor.ClassFound import ClassFound
+from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
+from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 from py_codegen.test_fixtures.various_classes import (
     SomeDataClass,
@@ -26,17 +27,10 @@ def test_various_classes():
                 'sdcArg2': str,
             },
         ),
-        'Dict': ClassFound(
-            name='Dict',
-            fields={},
-        ),
         'SomeNormalClass': ClassFound(
             name='SomeNormalClass',
             fields={
-                'checklist': ClassFound(
-                    name='Dict',
-                    fields={},
-                )
+                'checklist': DictFound(key=str, value=bool),
             },
         ),
         'SomeNamedTuple': ClassFound(

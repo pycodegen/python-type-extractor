@@ -4,12 +4,16 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Callable, Dict, Union
 
-from mypy_extensions import _TypedDictMeta
+from mypy_extensions import _TypedDictMeta  # type: ignore
 
-from .TypedDictFound import TypedDictFound
-from .ClassFound import ClassFound
-from .DuplicateNameFound import DuplicateNameFound
-from .FunctionFound import FunctionFound
+from py_codegen.type_extractor.nodes.DictFound import DictFound
+from py_codegen.type_extractor.nodes.ListFound import ListFound
+from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
+from py_codegen.type_extractor.nodes.ClassFound import ClassFound
+from py_codegen.type_extractor.errors import (
+    DuplicateNameFound,
+)
+from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from .TypeOR import TypeOR
 
 
@@ -54,8 +58,6 @@ class TypeExtractor:
             return typ
 
         elif isinstance(typ, _TypedDictMeta):
-            print('!!')
-            print(typ)
             annotations = {
                 key: self.__process_param(value)
                 for key, value in typ.__annotations__.items()
@@ -76,11 +78,30 @@ class TypeExtractor:
             return class_found
 
         try:
+            if typ.__origin__ is list:
+                return self.__process_list(typ)
             if typ.__origin__ is Union:
                 return self.__process_union(typ)
+            if typ.__origin__ is dict:
+                return self.__process_dict(typ)
         except:
-            # FIXME: think what to do here...
             pass
+
+        raise NotImplementedError(f'type_extractor not implemented for {typ}')
+
+    def __process_dict(self, dict_typ):
+        assert(dict_typ.__origin__ is dict)
+        processed_key_typ = self.__process_param(dict_typ.__args__[0])
+        processed_value_typ = self.__process_param(dict_typ.__args__[1])
+        return DictFound(
+            key=processed_key_typ,
+            value=processed_value_typ,
+        )
+
+    def __process_list(self, list_typ):
+        assert(list_typ.__origin__ is list)
+        processed_typ = self.__process_param(list_typ.__args__[0])
+        return ListFound(typ=processed_typ)
 
     def __process_union(self, union):
         assert(union.__origin__ is Union)
@@ -124,7 +145,7 @@ class TypeExtractor:
             filePath=filename,
             raw_params=argspec.annotations,
             params=params,
-            doc=func.__doc__,
+            doc=func.__doc__ or '',
             func=func,
             return_type=return_type,
         )

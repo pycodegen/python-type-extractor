@@ -1,29 +1,32 @@
-from collections import OrderedDict
-from pprint import pformat
 from typing import Callable, NamedTuple, Any, Optional, Dict
 
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
 
-class FunctionFound(NamedTuple):
+
+class FunctionFound(NamedTuple, BaseNodeType):  # type: ignore
+
     name: str
-    params: Dict[str, Any]
+    params: Dict[str, NodeType]
     return_type: Any
     func: Optional[Callable] = None
     raw_params: Dict[str, Any] = {}
     doc: str = ''
     filePath: str = ''
-    INTERNAL_params_extra: Optional[Dict[str, OrderedDict]] = None
+    INTERNAL_params_extra: Optional[Dict[str, Dict[str, Any]]] = None
     INTERNAL_return_extra: Optional[Dict[str, Any]] = None
 
 
 def set_params_extra(namespace: str):
     def __set_fields_extra(
             func_found: FunctionFound,
-            params_extra: OrderedDict,
+            extra: Dict[str, Any],
     ):
-        func_found.INTERNAL_params_extra = \
-            func_found.INTERNAL_params_extra or {}
+        params_extra = func_found.INTERNAL_params_extra or {}
+        params_extra[namespace] = extra
+        return func_found._replace(
+            INTERNAL_params_extra=params_extra,
+        )
 
-        func_found.INTERNAL_params_extra[namespace] = params_extra
     return __set_fields_extra
 
 
@@ -40,9 +43,11 @@ def set_return_type_extra(
         namespace: str
 ) -> Callable[[FunctionFound, Any], None]:
     def __set_return_type_extra(func_found: FunctionFound, extra: Any):
-        func_found.INTERNAL_return_extra = \
-            func_found.INTERNAL_return_extra or {}
-        func_found.INTERNAL_return_extra[namespace] = extra
+        return_extra = func_found.INTERNAL_return_extra or {}
+        return_extra[namespace] = extra
+        return func_found._replace(
+            INTERNAL_params_extra=return_extra
+        )
 
     return __set_return_type_extra
 

@@ -3,17 +3,15 @@ from typing import (
     Dict,
     Any,
     Callable,
-    NewType,
-    Union,
     NamedTuple,
 )
 
-_FieldsExtra = NewType('_FieldsExtra', Dict[str, Any])
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
 
 
-class ClassFound(NamedTuple):
+class ClassFound(NamedTuple, BaseNodeType):  # type: ignore
     name: str
-    fields: Dict[str, Union[type, None]]
+    fields: Dict[str, NodeType]
     filePath: str = ''
     raw_fields: Dict[str, Any] = {}
     doc: str = ''
@@ -24,11 +22,13 @@ class ClassFound(NamedTuple):
 def set_fields_extra(namespace: str):
     def __set_fields_extra(
             class_found: ClassFound,
-            fields_extra: Dict[str, Any],
+            extra: Dict[str, Any],
     ):
-        class_found.INTERNAL_fields_extra = \
-            class_found.INTERNAL_fields_extra or {}
-        class_found.INTERNAL_fields_extra[namespace] = fields_extra
+        fields_extra = class_found.INTERNAL_fields_extra or {}
+        fields_extra[namespace] = extra
+        return class_found._replace(
+            INTERNAL_fields_extra=fields_extra,
+        )
     return __set_fields_extra
 
 

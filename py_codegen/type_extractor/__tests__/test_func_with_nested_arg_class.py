@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from py_codegen.type_extractor.ClassFound import ClassFound
+from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 

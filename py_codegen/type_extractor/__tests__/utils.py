@@ -1,13 +1,12 @@
 from copy import deepcopy
-from typing import Union, Callable
+from typing import Callable
 
-from py_codegen.type_extractor.TypedDictFound import TypedDictFound
-from py_codegen.type_extractor.ClassFound import ClassFound
-from py_codegen.type_extractor.FunctionFound import FunctionFound
+from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
+from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
+from py_codegen.type_extractor.nodes.ClassFound import ClassFound
+from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.TypeOR import TypeOR
 
-
-NodeType = Union[ClassFound, FunctionFound, TypedDictFound, TypeOR, type]
 
 traverse_func_type = Callable[
     [NodeType],
