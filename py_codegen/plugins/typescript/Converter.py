@@ -89,57 +89,8 @@ class TypescriptConverter:
             f"): {self.get_identifier(function_found.return_type)}"
         )
 
-    def __convert_typed_dict_found_annotations(
-            self,
-            annotations: Dict[str, NodeType],
-    ):
-        """
-        :param annotations:
-        {
-           'a': {
-              'b': int,
-              'c: {
-                'd': str,
-              }
-           },
-
-        }
-        :param indentation: int
-        :return:
-            // note: { at the beginning omitted!
-            a: {
-              b: number,
-              c {
-                d: string,
-              },
-           },
-           e: string
-           // note: } at the end omitted!
-        """
-        result: List[str] = []
-        for (name, node) in annotations.items():
-            # import pdb;pdb.set_trace()
-            if node is dict:
-                converted = self.__convert_typed_dict_found_annotations(
-                    node
-                )
-                tab = '\t'
-                result.append(
-                    f"{name}: {{"
-                    f"{indent(converted, tab)}"
-                    f"}},"
-                )
-            else:
-                result.append(
-                    f"{name}: {self.get_identifier(node)},"
-                )
-
-        return "\n".join(result)
-
     def convert_typed_dict_found(self, typed_dict_found: TypedDictFound):
-        annotations = self.__convert_typed_dict_found_annotations(
-            typed_dict_found.annotations
-        )
+        annotations = self.__convert_node_dict(typed_dict_found.annotations)
         tab = '\t'
         return (
             f"export interface {self.get_identifier(typed_dict_found)} {{\n"
