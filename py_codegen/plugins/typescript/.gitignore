@@ -1,3 +1,4 @@
 node_modules
 ts_compiled
 generated.ts
+__pycache__
