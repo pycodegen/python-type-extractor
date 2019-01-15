@@ -38,7 +38,7 @@ class TypescriptConverter:
         if isinstance(node, TypeOR):
             return f"{self.get_identifier(node.a)} | {self.get_identifier(node.b)}"
         if isinstance(node, DictFound):
-            return f"{{ [id: string]: {self.get_identifier(node.value)}]}}"
+            return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
         if isinstance(node, ListFound):
             return f"{self.get_identifier(node.typ)}[]"
 
