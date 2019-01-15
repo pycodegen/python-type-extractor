@@ -14,7 +14,7 @@ from py_codegen.type_extractor.errors import (
     DuplicateNameFound,
 )
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
-from .TypeOR import TypeOR
+from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 
 
 def is_builtin(something):
@@ -24,10 +24,12 @@ def is_builtin(something):
 class TypeExtractor:
     functions: Dict[str, FunctionFound]
     classes: Dict[str, ClassFound]
+    typed_dicts: Dict[str, TypedDictFound]
 
     def __init__(self):
         self.functions = dict()
         self.classes = dict()
+        self.typed_dicts = dict()
 
     def add_function(self, options):
         def add_function_decoration(func: Callable):
@@ -62,11 +64,15 @@ class TypeExtractor:
                 key: self.__process_param(value)
                 for key, value in typ.__annotations__.items()
             }
-            return TypedDictFound(
+            typed_dict_found = TypedDictFound(
                 annotations=annotations,
                 name=typ.__qualname__,
                 raw=typ,
             )
+            self.typed_dicts[
+                f"{typ.__qualname__}_{hash(typ)}"
+            ] = typed_dict_found
+            return typed_dict_found
 
         elif inspect.isfunction(typ):
             function_found = self.__to_function_found(typ)

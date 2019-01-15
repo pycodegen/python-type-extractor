@@ -5,7 +5,7 @@ from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
-from py_codegen.type_extractor.TypeOR import TypeOR
+from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 
 
 traverse_func_type = Callable[
