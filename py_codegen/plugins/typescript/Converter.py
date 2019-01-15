@@ -66,19 +66,19 @@ class TypescriptConverter:
         if typ == int or typ == float:
             return 'number'
 
-    def __convert_node_dict(self, node_dict: Dict[str, NodeType]):
+    def __convert_node_dict(self, node_dict: Dict[str, NodeType], ending: str = ','):
         converted: List[str] = []
         for (field_name, node) in node_dict.items():
             # TODO: sanitize field_name (eg. K-S --> K_S ) ?
             converted.append(
-                f"\t{field_name}: {self.get_identifier(node)};"
+                f"\t{field_name}: {self.get_identifier(node)}{ending}"
             )
         return '\n'.join(converted)
 
     def convert_class_found(self, class_found: ClassFound):
         return (
             f"export class {self.get_identifier(class_found)} {{\n"
-            f"   {self.__convert_node_dict(class_found.fields)} \n"
+            f"   {self.__convert_node_dict(class_found.fields, ';')} \n"
             "}"
         )
 

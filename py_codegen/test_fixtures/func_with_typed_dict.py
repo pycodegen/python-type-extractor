@@ -16,7 +16,7 @@ class SomeClass:
 
 OutputType = TypedDict('OutputType', {
     'b': int,
-    's': SomeClass
+    's': SomeClass,
 })
 
 

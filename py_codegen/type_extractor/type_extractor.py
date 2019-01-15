@@ -51,6 +51,7 @@ class TypeExtractor:
         processed_params = {
             key: self.__process_param(value)
             for key, value in params.items()
+            if key != 'return'
         }
         return processed_params
 
