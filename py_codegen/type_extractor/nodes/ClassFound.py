@@ -9,7 +9,7 @@ from typing import (
 from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
 
 
-class ClassFound(NamedTuple, BaseNodeType):  # type: ignore
+class ClassFound(BaseNodeType, NamedTuple):  # type: ignore
     name: str
     fields: Dict[str, NodeType]
     filePath: str = ''

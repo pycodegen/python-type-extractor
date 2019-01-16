@@ -1,15 +1,18 @@
 import builtins
 import inspect
+from collections import OrderedDict
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Callable, Dict, Union
+from typing import Callable, Dict, Union, List
 
 from mypy_extensions import _TypedDictMeta  # type: ignore
 
+from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
+from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
 from py_codegen.type_extractor.errors import (
     DuplicateNameFound,
 )
@@ -34,7 +37,7 @@ class TypeExtractor:
     def add_function(self, options):
         def add_function_decoration(func: Callable):
             signature = inspect.getfullargspec(func)
-            self.__process_params(signature.annotations)
+            self.__process_params(signature.annotations, signature.args)
             function_found = self.__to_function_found(func)
             if function_found.name in self.functions:
                 raise DuplicateNameFound(
@@ -47,12 +50,16 @@ class TypeExtractor:
             return func
         return add_function_decoration
 
-    def __process_params(self, params: Dict[str, Union[type, None]]):
-        processed_params = {
-            key: self.__process_param(value)
-            for key, value in params.items()
-            if key != 'return'
-        }
+    def __process_params(self, params: Dict[str, Union[type, None]], param_names_list: List[str]):
+        processed_params: OrderedDict[str, NodeType] = OrderedDict()
+        banned_words = [
+            'self', 'return', '_cls',
+        ]
+        _param_names_list = filter(lambda name: name not in banned_words, param_names_list)
+        for param_name in _param_names_list:
+            processed_params[param_name] = self.__process_param(
+                params.get(param_name) or inspect._empty,  # type: ignore
+            )
         return processed_params
 
     def __process_param(self, typ):
@@ -60,6 +67,8 @@ class TypeExtractor:
         if is_builtin(typ):
             return typ
 
+        elif typ is inspect._empty:
+            return unknown_found
         elif isinstance(typ, _TypedDictMeta):
             annotations = {
                 key: self.__process_param(value)
@@ -126,10 +135,12 @@ class TypeExtractor:
         module = inspect.getmodule(_class)
         filename = module.__file__
         fields_to_process = deepcopy(argspec.annotations)
-        unwanted_keys = set(fields_to_process.keys()) - set(argspec.args)
-        for unwanted_key in unwanted_keys:
-            del fields_to_process[unwanted_key]
-        fields = self.__process_params(fields_to_process)
+        # unwanted_keys = set(fields_to_process.keys()) - set(argspec.args)
+        # for unwanted_key in unwanted_keys:
+        #     del fields_to_process[unwanted_key]
+        fields = self.__process_params(argspec.annotations, argspec.args)
+        # import pdb;
+        # pdb.set_trace()
         class_found = ClassFound(
             name=_class.__name__,
             class_raw=_class,
@@ -145,7 +156,7 @@ class TypeExtractor:
         signature = inspect.signature(func)
         module = inspect.getmodule(func)
         filename = module.__file__
-        params = self.__process_params(argspec.annotations)
+        params = self.__process_params(argspec.annotations, argspec.args)
         return_type = self.__process_param(signature.return_annotation)
         func_found = FunctionFound(
             name=func.__name__,
