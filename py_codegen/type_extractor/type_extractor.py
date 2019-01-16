@@ -63,6 +63,17 @@ class TypeExtractor:
         return processed_params
 
     def __process_param(self, typ):
+        try:
+            typ_origin = typ.__origin__
+            if typ_origin is list or typ_origin is List:
+                return self.__process_list(typ)
+            if typ_origin is Union:
+                return self.__process_union(typ)
+            if typ_origin is dict or typ_origin is Dict:
+                return self.__process_dict(typ)
+
+        except:
+            pass
 
         if is_builtin(typ):
             return typ
@@ -93,20 +104,11 @@ class TypeExtractor:
             self.__add_class_found(class_found)
             return class_found
 
-        try:
-            if typ.__origin__ is list:
-                return self.__process_list(typ)
-            if typ.__origin__ is Union:
-                return self.__process_union(typ)
-            if typ.__origin__ is dict:
-                return self.__process_dict(typ)
-        except:
-            pass
+
 
         raise NotImplementedError(f'type_extractor not implemented for {typ}')
 
     def __process_dict(self, dict_typ):
-        assert(dict_typ.__origin__ is dict)
         processed_key_typ = self.__process_param(dict_typ.__args__[0])
         processed_value_typ = self.__process_param(dict_typ.__args__[1])
         return DictFound(
@@ -115,7 +117,6 @@ class TypeExtractor:
         )
 
     def __process_list(self, list_typ):
-        assert(list_typ.__origin__ is list)
         processed_typ = self.__process_param(list_typ.__args__[0])
         return ListFound(typ=processed_typ)
 
