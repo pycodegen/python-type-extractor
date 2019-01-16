@@ -1,8 +1,9 @@
 from textwrap import dedent
 from typing import (
-    Callable,
+    cast,
     List,
-    Dict)
+    Dict,
+)
 
 from textwrap import (
     indent,
@@ -15,6 +16,7 @@ from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
+from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
 from py_codegen.type_extractor.type_extractor import TypeExtractor, is_builtin
 
 
@@ -41,10 +43,14 @@ class TypescriptConverter:
             return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
         if isinstance(node, ListFound):
             return f"{self.get_identifier(node.typ)}[]"
+        if node is unknown_found:
+            return "any"
 
         # import pdb;pdb.set_trace()
         if is_builtin(node):
-            return self.__convert_builtin(node)
+            return self.__convert_builtin(cast(type, node))
+
+        raise NotImplementedError(f'get_identifier not implemented for {node}')
 
     def run(self):
 
