@@ -4,11 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='python_codegen',
+    name='py_codegen',
     version='0.0.1',
-    author="Example Author",
-    author_email="author@example.com",
-    description="A small example package",
+    author="Dev Doomari",
+    author_email="devdoomari@gmail.com",
+    description="Generate Code Stubs using Python!",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",
@@ -18,6 +18,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "monkeytype",
+        "mypy",
+        "mypy_extensions",
+        "dataclasses",
     ],
 )
