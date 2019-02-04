@@ -175,8 +175,8 @@ class TypeExtractor:
 
     def add_class(self, options):
         def add_class_decoration(_class):
-            if is_builtin(_class):
-                return
-            class_found = self.__to_class_found(_class)
-            self.__add_class_found(class_found)
+            if not is_builtin(_class):
+                class_found = self.__to_class_found(_class)
+                self.__add_class_found(class_found)
+            return _class
         return add_class_decoration
