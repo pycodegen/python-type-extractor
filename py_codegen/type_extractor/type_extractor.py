@@ -10,6 +10,7 @@ from mypy_extensions import _TypedDictMeta  # type: ignore
 from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
+from py_codegen.type_extractor.nodes.NoneNode import NoneNode
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
@@ -50,7 +51,11 @@ class TypeExtractor:
             return func
         return add_function_decoration
 
-    def __process_params(self, params: Dict[str, Union[type, None]], param_names_list: List[str]):
+    def __process_params(
+            self,
+            params: Dict[str, Union[type, None]],
+            param_names_list: List[str],
+    ):
         processed_params: OrderedDict[str, NodeType] = OrderedDict()
         banned_words = [
             'self', 'return', '_cls',
@@ -74,6 +79,9 @@ class TypeExtractor:
 
         except:
             pass
+
+        if typ is type(None):
+            return NoneNode()
 
         if is_builtin(typ):
             return typ
@@ -104,9 +112,9 @@ class TypeExtractor:
             self.__add_class_found(class_found)
             return class_found
 
+        return unknown_found
 
-
-        raise NotImplementedError(f'type_extractor not implemented for {typ}')
+        # raise NotImplementedError(f'type_extractor not implemented for {typ}')
 
     def __process_dict(self, dict_typ):
         processed_key_typ = self.__process_param(dict_typ.__args__[0])
@@ -135,13 +143,7 @@ class TypeExtractor:
         argspec = inspect.getfullargspec(_data_class)
         module = inspect.getmodule(_class)
         filename = module.__file__
-        fields_to_process = deepcopy(argspec.annotations)
-        # unwanted_keys = set(fields_to_process.keys()) - set(argspec.args)
-        # for unwanted_key in unwanted_keys:
-        #     del fields_to_process[unwanted_key]
         fields = self.__process_params(argspec.annotations, argspec.args)
-        # import pdb;
-        # pdb.set_trace()
         class_found = ClassFound(
             name=_class.__name__,
             class_raw=_class,

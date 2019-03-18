@@ -14,6 +14,7 @@ from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
+from py_codegen.type_extractor.nodes.NoneNode import NoneNode
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
@@ -31,6 +32,9 @@ class TypescriptConverter:
 
     def get_identifier(self, node: NodeType) -> str:
         # TODO: sanitize names!
+        # import pdb;pdb.set_trace()
+        if isinstance(node, NoneNode):
+            return 'null'
         if isinstance(node, ClassFound):
             return node.name
         if isinstance(node, FunctionFound):
