@@ -1,7 +1,6 @@
 from mypy_extensions import TypedDict
 
 
-
 SimpleTypedDict1 = TypedDict('SimpleTypedDict1', {
     'a': str,
 })

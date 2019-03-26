@@ -25,9 +25,9 @@ def test_func_with_typed_dict():
                             annotations={
                                 'a': str,
                             },
-                        )
+                        ),
                     },
-                )
+                ),
             },
             return_type=TypedDictFound(
                 annotations={
@@ -36,10 +36,10 @@ def test_func_with_typed_dict():
                         name='SomeClass',
                         fields={
                             'a': int,
-                        }
-                    )
+                        },
+                    ),
                 },
-                name='OutputType'
+                name='OutputType',
             )
         ),
         cleanup,

@@ -1,0 +1,11 @@
+digraph G {
+  splines="FALSE";
+
+  /* Entities */
+  shortName [label="shortName", shape="|square,rectangle,circle,ellipse,triangle,plaintext,point,diamond,pentagon,hexagon,septagon,octagon,egg,trapezium,parallelogram,house,doublecircle,doubleoctagon,tripleoctagon,invtriangle,invtrapezium,invhouse,Mdiamond,Msquare,Mcircle,none,note,tab,folder,box3d|", URL="http://en.wikipedia.org/wiki/John de Fries"]
+
+  /* Relationships */
+  F1 -> shortName[label=".63"]
+
+  /* Ranks */
+}
