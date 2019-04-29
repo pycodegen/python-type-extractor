@@ -1,7 +1,9 @@
 import builtins
 import inspect
-from collections import OrderedDict
-from copy import deepcopy
+from collections import (
+    OrderedDict,
+    abc,
+)
 from dataclasses import dataclass
 from typing import (
     Callable,
@@ -9,6 +11,7 @@ from typing import (
     Union,
     List,
     Tuple,
+    Mapping,
 )
 
 from mypy_extensions import _TypedDictMeta  # type: ignore
@@ -16,6 +19,7 @@ from mypy_extensions import _TypedDictMeta  # type: ignore
 from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
+from py_codegen.type_extractor.nodes.MappingFound import MappingFound
 from py_codegen.type_extractor.nodes.NoneNode import NoneNode
 from py_codegen.type_extractor.nodes.TupleFound import TupleFound
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
@@ -85,6 +89,8 @@ class TypeExtractor:
                 return self.__process_dict(typ)
             if typ_origin is tuple or typ_origin is Tuple:
                 return self.__process_tuple(typ)
+            if typ_origin is abc.Mapping or typ_origin is Mapping:
+                return self.__process_mapping(typ)
 
         except:
             pass
@@ -150,6 +156,14 @@ class TypeExtractor:
         return TypeOR(
             a=type_a,
             b=type_b,
+        )
+
+    def __process_mapping(self, mapping):
+        type_key = self.__process_param(mapping.__args__[0])
+        type_value = self.__process_param(mapping.__args__[1])
+        return MappingFound(
+            key=type_key,
+            value=type_value,
         )
 
     def __to_class_found(self, _class):
