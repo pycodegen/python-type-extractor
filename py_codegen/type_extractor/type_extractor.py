@@ -3,7 +3,13 @@ import inspect
 from collections import OrderedDict
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Callable, Dict, Union, List
+from typing import (
+    Callable,
+    Dict,
+    Union,
+    List,
+    Tuple,
+)
 
 from mypy_extensions import _TypedDictMeta  # type: ignore
 
@@ -11,6 +17,7 @@ from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
 from py_codegen.type_extractor.nodes.NoneNode import NoneNode
+from py_codegen.type_extractor.nodes.TupleFound import TupleFound
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
@@ -76,6 +83,8 @@ class TypeExtractor:
                 return self.__process_union(typ)
             if typ_origin is dict or typ_origin is Dict:
                 return self.__process_dict(typ)
+            if typ_origin is tuple or typ_origin is Tuple:
+                return self.__process_tuple(typ)
 
         except:
             pass
@@ -127,6 +136,11 @@ class TypeExtractor:
     def __process_list(self, list_typ):
         processed_typ = self.__process_param(list_typ.__args__[0])
         return ListFound(typ=processed_typ)
+
+    def __process_tuple(self, tuple_typ):
+        assert(tuple_typ.__origin__ == tuple)
+        processed_typ = [self.__process_param(param) for param in tuple_typ.__args__]
+        return TupleFound(types=processed_typ)
 
     def __process_union(self, union):
         assert(union.__origin__ is Union)
