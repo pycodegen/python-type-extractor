@@ -2,3 +2,4 @@ node_modules
 ts_compiled
 generated.ts
 __pycache__
+__tests__/ts_generated/*.d.ts
