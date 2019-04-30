@@ -15,6 +15,7 @@ from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
 from py_codegen.type_extractor.nodes.NoneNode import NoneNode
+from py_codegen.type_extractor.nodes.TupleFound import TupleFound
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
@@ -47,6 +48,8 @@ class TypescriptConverter:
             return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
         if isinstance(node, ListFound):
             return f"{self.get_identifier(node.typ)}[]"
+        if isinstance(node, TupleFound):
+            return f"[{', '.join([self.get_identifier(typ) for typ in node.types])}]"
         if node is unknown_found:
             return "any"
 
