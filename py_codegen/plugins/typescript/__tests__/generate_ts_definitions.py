@@ -16,14 +16,14 @@ from os import path
 
 def generate_and_write_func_ts_definition(func):
     type_collector = TypeExtractor()
-    type_collector.add_function(None)(func)
+    type_collector.add(None)(func)
     converter = TypescriptConverter(type_collector)
     __write_ts_definition__(func.__qualname__, converter.run())
 
 
 def generate_and_write_class_ts_definition(cls):
     type_collector = TypeExtractor()
-    type_collector.add_class(None)(cls)
+    type_collector.add(None)(cls)
     converter = TypescriptConverter(type_collector)
     __write_ts_definition__(cls.__qualname__, converter.run())
 
