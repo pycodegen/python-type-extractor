@@ -2,67 +2,67 @@ import builtins
 import inspect
 from collections import (
     OrderedDict,
-    abc,
 )
-from dataclasses import dataclass
 from typing import (
     Callable,
     Dict,
     Union,
     List,
-    Tuple,
-    Mapping,
+    Any,
 )
 
-from mypy_extensions import _TypedDictMeta  # type: ignore
-
-from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
-from py_codegen.type_extractor.nodes.DictFound import DictFound
-from py_codegen.type_extractor.nodes.ListFound import ListFound
-from py_codegen.type_extractor.nodes.MappingFound import MappingFound
-from py_codegen.type_extractor.nodes.NoneNode import NoneNode
-from py_codegen.type_extractor.nodes.TupleFound import TupleFound
-from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
-from py_codegen.type_extractor.nodes.ClassFound import ClassFound
+from py_codegen.type_extractor.__base__ import BaseTypeExtractor
+from py_codegen.type_extractor.middlewares.class_found import class_found_middleware
+from py_codegen.type_extractor.middlewares.dict_found import dict_found_middleware
+from py_codegen.type_extractor.middlewares.function_found import func_found_middleware
+from py_codegen.type_extractor.middlewares.list_found import list_found_middleware
+from py_codegen.type_extractor.middlewares.mapping_found import mapping_found_middleware
+from py_codegen.type_extractor.middlewares.tuple_found import tuple_found_middleware
+from py_codegen.type_extractor.middlewares.type_or import typeor_middleware
+from py_codegen.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType
+from py_codegen.type_extractor.nodes.NoneNode import none_node_middleware
+from py_codegen.type_extractor.middlewares.typeddict_found import typeddict_found_middleware
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
-from py_codegen.type_extractor.errors import (
-    DuplicateNameFound,
-)
-from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
-from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 
 
-def is_builtin(something):
-    return inspect.getmodule(something) is builtins
+def is_builtin(typ):
+    return inspect.getmodule(typ) is builtins
 
 
-class TypeExtractor:
-    functions: Dict[str, FunctionFound]
-    classes: Dict[str, ClassFound]
-    typed_dicts: Dict[str, TypedDictFound]
+def builtin_middleware(typ, type_extractor: 'TypeExtractor'):
+    if is_builtin(typ):
+        return typ
+
+
+class TypeExtractor(BaseTypeExtractor):
+    middlewares: List[
+        Callable[
+            [Any, 'TypeExtractor'],
+            BaseNodeType,
+        ]
+    ] = [
+        list_found_middleware,
+        typeor_middleware,
+        typeddict_found_middleware,
+        dict_found_middleware,
+        tuple_found_middleware,
+        class_found_middleware,
+        func_found_middleware,
+        mapping_found_middleware,
+        none_node_middleware,
+        builtin_middleware,
+        typeddict_found_middleware,
+    ]
+
+    collected_types: Dict[str, NodeType]
 
     def __init__(self):
         self.functions = dict()
         self.classes = dict()
         self.typed_dicts = dict()
+        BaseTypeExtractor.__init__(self)
 
-    def add_function(self, options):
-        def add_function_decoration(func: Callable):
-            signature = inspect.getfullargspec(func)
-            self.__process_params(signature.annotations, signature.args)
-            function_found = self.__to_function_found(func)
-            if function_found.name in self.functions:
-                raise DuplicateNameFound(
-                    self.functions.get(
-                        function_found.name
-                    ),
-                    function_found
-                )
-            self.functions[function_found.name] = function_found
-            return func
-        return add_function_decoration
-
-    def __process_params(
+    def params_to_nodes(
             self,
             params: Dict[str, Union[type, None]],
             param_names_list: List[str],
@@ -73,140 +73,43 @@ class TypeExtractor:
         ]
         _param_names_list = filter(lambda name: name not in banned_words, param_names_list)
         for param_name in _param_names_list:
-            processed_params[param_name] = self.__process_param(
+            processed_params[param_name] = self.rawtype_to_node(
                 params.get(param_name) or inspect._empty,  # type: ignore
             )
         return processed_params
 
-    def __process_param(self, typ):
-        try:
-            typ_origin = typ.__origin__
-            if typ_origin is list or typ_origin is List:
-                return self.__process_list(typ)
-            if typ_origin is Union:
-                return self.__process_union(typ)
-            if typ_origin is dict or typ_origin is Dict:
-                return self.__process_dict(typ)
-            if typ_origin is tuple or typ_origin is Tuple:
-                return self.__process_tuple(typ)
-            if typ_origin is abc.Mapping or typ_origin is Mapping:
-                return self.__process_mapping(typ)
+    # def rawtype_to_node(self, typ):
 
-        except:
-            pass
-
-        if typ is type(None):
-            return NoneNode()
-
-        if is_builtin(typ):
-            return typ
-
-        elif typ is inspect._empty:
-            return unknown_found
-        elif isinstance(typ, _TypedDictMeta):
-            annotations = {
-                key: self.__process_param(value)
-                for key, value in typ.__annotations__.items()
-            }
-            typed_dict_found = TypedDictFound(
-                annotations=annotations,
-                name=typ.__qualname__,
-                raw=typ,
-            )
-            self.typed_dicts[
-                f"{typ.__qualname__}_{hash(typ)}"
-            ] = typed_dict_found
-            return typed_dict_found
-
-        elif inspect.isfunction(typ):
-            function_found = self.__to_function_found(typ)
-            return function_found
-
-        elif inspect.isclass(typ):
-            class_found = self.__to_class_found(typ)
-            self.__add_class_found(class_found)
-            return class_found
-
+    def rawtype_to_node(self, typ, options=None):
+        for middleware in self.middlewares:
+            # noinspection PyBroadException
+            try:
+                value = middleware(typ, self)
+                if value is not None:
+                    return value
+            except Exception as e:
+                pass
         return unknown_found
+
+        # if typ is inspect._empty:
+        #     return unknown_found
+        #
+        # elif inspect.isfunction(typ):
+        #     function_found = self.__to_function_found(typ)
+        #     return function_found
+        #
+        # elif inspect.isclass(typ):
+        #     class_found = self.__to_class_found(typ)
+        #     self.__add_found(class_found)
+        #     return class_found
+        #
+        # return unknown_found
 
         # raise NotImplementedError(f'type_extractor not implemented for {typ}')
 
-    def __process_dict(self, dict_typ):
-        processed_key_typ = self.__process_param(dict_typ.__args__[0])
-        processed_value_typ = self.__process_param(dict_typ.__args__[1])
-        return DictFound(
-            key=processed_key_typ,
-            value=processed_value_typ,
-        )
-
-    def __process_list(self, list_typ):
-        processed_typ = self.__process_param(list_typ.__args__[0])
-        return ListFound(typ=processed_typ)
-
-    def __process_tuple(self, tuple_typ):
-        assert(tuple_typ.__origin__ == tuple)
-        processed_typ = [self.__process_param(param) for param in tuple_typ.__args__]
-        return TupleFound(types=processed_typ)
-
-    def __process_union(self, union):
-        assert(union.__origin__ is Union)
-        types = union.__args__
-        type_a = self.__process_param(types[0])
-        type_b = self.__process_param(types[1])
-        return TypeOR(
-            a=type_a,
-            b=type_b,
-        )
-
-    def __process_mapping(self, mapping):
-        type_key = self.__process_param(mapping.__args__[0])
-        type_value = self.__process_param(mapping.__args__[1])
-        return MappingFound(
-            key=type_key,
-            value=type_value,
-        )
-
-    def __to_class_found(self, _class):
-        _data_class = dataclass(_class)
-        argspec = inspect.getfullargspec(_data_class)
-        module = inspect.getmodule(_class)
-        filename = module.__file__
-        fields = self.__process_params(argspec.annotations, argspec.args)
-        class_found = ClassFound(
-            name=_class.__name__,
-            class_raw=_class,
-            filePath=filename,
-            raw_fields=argspec.annotations,
-            fields=fields,
-            doc=_class.__doc__
-        )
-        return class_found
-
-    def __to_function_found(self, func: Callable) -> FunctionFound:
-        argspec = inspect.getfullargspec(func)
-        signature = inspect.signature(func)
-        module = inspect.getmodule(func)
-        filename = module.__file__
-        params = self.__process_params(argspec.annotations, argspec.args)
-        return_type = self.__process_param(signature.return_annotation)
-        func_found = FunctionFound(
-            name=func.__name__,
-            filePath=filename,
-            raw_params=argspec.annotations,
-            params=params,
-            doc=func.__doc__ or '',
-            func=func,
-            return_type=return_type,
-        )
-        return func_found
-
-    def __add_class_found(self, class_found: ClassFound):
-        self.classes[class_found.name] = class_found
-
-    def add_class(self, options):
-        def add_class_decoration(_class):
-            if not is_builtin(_class):
-                class_found = self.__to_class_found(_class)
-                self.__add_class_found(class_found)
-            return _class
-        return add_class_decoration
+    def add(self, options=None):
+        def add_decoration(typ):
+            if not is_builtin(typ):
+                self.rawtype_to_node(typ, options)
+            return typ
+        return add_decoration

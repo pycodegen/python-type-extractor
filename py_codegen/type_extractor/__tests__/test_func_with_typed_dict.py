@@ -9,8 +9,8 @@ from py_codegen.type_extractor.__tests__.utils import cleanup, traverse
 def test_func_with_typed_dict():
     type_collector = TypeExtractor()
 
-    type_collector.add_function(None)(func_with_typed_dict)
-    func = type_collector.functions['func_with_typed_dict']
+    type_collector.add(None)(func_with_typed_dict)
+    func = type_collector.collected_types['func_with_typed_dict']
     cleaned_func = traverse(func, cleanup)
 
     to_compare_func = traverse(

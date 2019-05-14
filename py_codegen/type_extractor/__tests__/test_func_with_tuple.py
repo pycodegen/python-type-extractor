@@ -8,11 +8,11 @@ from py_codegen.test_fixtures.func_with_tuple import func_with_tuple
 def test_func_with_tuple():
     type_collector = TypeExtractor()
 
-    type_collector.add_function(None)(func_with_tuple)
+    type_collector.add(None)(func_with_tuple)
 
     # assert type_collector.classes == {}
     func_found_cleaned = cleanup(
-        type_collector.functions[func_with_tuple.__qualname__],
+        type_collector.collected_types[func_with_tuple.__qualname__],
     )
     assert func_found_cleaned == traverse(
         FunctionFound(

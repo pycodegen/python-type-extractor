@@ -8,11 +8,10 @@ from py_codegen.test_fixtures.func_with_dict import func_with_dict
 def test_func_with_dict():
     type_collector = TypeExtractor()
 
-    type_collector.add_function(None)(func_with_dict)
+    type_collector.add(None)(func_with_dict)
 
-    assert type_collector.classes == {}
     func_found_cleaned = traverse(
-        type_collector.functions[func_with_dict.__qualname__],
+        type_collector.collected_types[func_with_dict.__qualname__],
         cleanup,
     )
     assert func_found_cleaned == traverse(

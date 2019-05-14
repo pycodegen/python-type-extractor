@@ -9,3 +9,4 @@ class TypedDictFound(NamedTuple, BaseNodeType):  # type: ignore
     annotations: Dict[str, NodeType]
     name: str = ''
     raw: Optional[_TypedDictMeta] = None
+

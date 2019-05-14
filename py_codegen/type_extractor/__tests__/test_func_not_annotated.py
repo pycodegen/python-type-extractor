@@ -8,11 +8,11 @@ from py_codegen.test_fixtures.func_not_annotated import func_not_annotated
 def test_func_not_annotated():
     type_collector = TypeExtractor()
 
-    type_collector.add_function(None)(func_not_annotated)
+    type_collector.add(None)(func_not_annotated)
 
     # assert type_collector.classes == {}
     func_found_cleaned = cleanup(
-        type_collector.functions[func_not_annotated.__qualname__],
+        type_collector.collected_types[func_not_annotated.__qualname__],
     )
     assert func_found_cleaned.return_type == unknown_found
     assert func_found_cleaned == traverse(
