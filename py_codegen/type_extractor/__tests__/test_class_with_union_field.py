@@ -8,11 +8,12 @@ from py_codegen.type_extractor.type_extractor import TypeExtractor
 def test_class_with_union_field():
     type_collector = TypeExtractor()
 
-    type_collector.add_class(None)(ClassWithUnionField)
+    type_collector.add(None)(ClassWithUnionField)
 
     classes = {
         key: traverse(value, cleanup)
-        for (key, value) in type_collector.classes.items()
+        for (key, value) in type_collector.collected_types.items()
+        if isinstance(value, ClassFound)
     }
     assert classes == {
         'ClassWithUnionField': ClassFound(

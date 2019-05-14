@@ -8,11 +8,11 @@ from py_codegen.test_fixtures.func_with_builtin_type_args \
 def test_func_with_builtin_type_args():
     type_collector = TypeExtractor()
 
-    type_collector.add_function(None)(func_with_builtin_args)
+    type_collector.add(None)(func_with_builtin_args)
 
     assert type_collector.classes == {}
     func_found_cleaned = cleanup(
-        type_collector.functions['func_with_builtin_args'],
+        type_collector.collected_types['func_with_builtin_args'],
     )
     assert func_found_cleaned == cleanup(FunctionFound(
         name='func_with_builtin_args',

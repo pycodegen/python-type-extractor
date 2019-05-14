@@ -12,12 +12,13 @@ from py_codegen.test_fixtures.various_classes import (
 def test_various_classes():
 
     type_extractor = TypeExtractor()
-    type_extractor.add_class(None)(SomeDataClass)
-    type_extractor.add_class(None)(SomeNormalClass)
-    type_extractor.add_class(None)(SomeNamedTuple)
+    type_extractor.add(None)(SomeDataClass)
+    type_extractor.add(None)(SomeNormalClass)
+    type_extractor.add(None)(SomeNamedTuple)
     classes = {
         key: traverse(value, cleanup)
-        for (key, value) in type_extractor.classes.items()
+        for (key, value) in type_extractor.collected_types.items()
+        if isinstance(value, ClassFound)
     }
     assert classes == {
         'SomeDataClass': ClassFound(
