@@ -1,19 +1,14 @@
-import itertools
-from functools import reduce
-from textwrap import dedent, indent
+from textwrap import dedent
 from typing import (
     cast,
     List,
+    Dict,
     Callable)
 
 from textwrap import (
     indent,
 )
 
-from py_codegen.plugins.typescript.__base__ import BaseTypescriptConverter
-from py_codegen.plugins.typescript.middlewares.classes import class_middleware
-from py_codegen.plugins.typescript.middlewares.functions import functionfounds_middleware
-from py_codegen.plugins.typescript.middlewares.typeddicts import typeddicts_middleware
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
 from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
@@ -27,26 +22,21 @@ from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
 from py_codegen.type_extractor.type_extractor import TypeExtractor, is_builtin
 
-MiddlewareType = Callable[
-    [BaseTypeExtractor, BaseTypescriptConverter],
-    List[str],
-]
+MiddlewareType = Callable[[
+    BaseTypeExtractor,
+    'BaseTypescriptConverter',
+], List[str]]
 
-class TypescriptConverter:
+class BaseTypescriptConverter:
     extractor: TypeExtractor
+
     middlewares: List[MiddlewareType]
 
     def __init__(
             self,
             extractor: TypeExtractor,
-            middlewares: List[MiddlewareType] = [
-                class_middleware,
-                functionfounds_middleware,
-                typeddicts_middleware,
-            ],
     ):
         self.extractor = extractor
-        self.middlewares = middlewares
 
     def get_identifier(self, node: NodeType) -> str:
         # TODO: sanitize names!
@@ -73,18 +63,4 @@ class TypescriptConverter:
             return self.__convert_builtin(cast(type, node))
 
         raise NotImplementedError(f'get_identifier not implemented for {node}')
-
-    def run(self):
-        r: List[List[str]] = [
-            middleware(self.extractor, self)
-            for middleware in self.middlewares
-        ]
-        merged: List[str] = list(itertools.chain.from_iterable(r))
-        return '\n'.join(merged)
-
-    def __convert_builtin(self, typ: type):
-        if typ == str:
-            return 'string'
-        if typ == int or typ == float:
-            return 'number'
 
