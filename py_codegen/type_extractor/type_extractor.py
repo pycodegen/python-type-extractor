@@ -16,6 +16,7 @@ from py_codegen.type_extractor.middlewares.class_found import class_found_middle
 from py_codegen.type_extractor.middlewares.dict_found import dict_found_middleware
 from py_codegen.type_extractor.middlewares.function_found import func_found_middleware
 from py_codegen.type_extractor.middlewares.list_found import list_found_middleware
+from py_codegen.type_extractor.middlewares.literal_found import literal_found_middleware
 from py_codegen.type_extractor.middlewares.mapping_found import mapping_found_middleware
 from py_codegen.type_extractor.middlewares.tuple_found import tuple_found_middleware
 from py_codegen.type_extractor.middlewares.type_or import typeor_middleware
@@ -44,6 +45,7 @@ class TypeExtractor(BaseTypeExtractor):
         list_found_middleware,
         typeor_middleware,
         typeddict_found_middleware,
+        literal_found_middleware,
         dict_found_middleware,
         tuple_found_middleware,
         class_found_middleware,
