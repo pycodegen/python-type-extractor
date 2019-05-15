@@ -6,10 +6,6 @@ from typing import (
     List,
     Callable)
 
-from textwrap import (
-    indent,
-)
-
 from py_codegen.plugins.typescript.__base__ import BaseTypescriptConverter
 from py_codegen.plugins.typescript.middlewares.classes import class_middleware
 from py_codegen.plugins.typescript.middlewares.functions import functionfounds_middleware
@@ -20,6 +16,7 @@ from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
+from py_codegen.type_extractor.nodes.LiteralFound import LiteralFound
 from py_codegen.type_extractor.nodes.NoneNode import NoneNode
 from py_codegen.type_extractor.nodes.TupleFound import TupleFound
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
@@ -32,9 +29,28 @@ MiddlewareType = Callable[
     List[str],
 ]
 
+LiteralConverterType = Callable[
+    [LiteralFound],
+    str,
+]
+
+def default_literal_converter(node: LiteralFound) -> str:
+    if isinstance(node.value, str):
+        return f"'{node.value}'"
+    elif isinstance(node.value, int) \
+            or isinstance(node.value, float):
+        return f"{node.value}"
+    elif node.value == True:
+        return "true"
+    elif node.value == False:
+        return "false"
+    raise NotImplementedError(f"default_literal_converter cannot handle ${node.value}")
+
+
 class TypescriptConverter:
     extractor: TypeExtractor
     middlewares: List[MiddlewareType]
+    literal_converter: LiteralConverterType
 
     def __init__(
             self,
@@ -44,9 +60,11 @@ class TypescriptConverter:
                 functionfounds_middleware,
                 typeddicts_middleware,
             ],
+            literal_converter: LiteralConverterType = default_literal_converter,
     ):
         self.extractor = extractor
         self.middlewares = middlewares
+        self.literal_converter = literal_converter
 
     def get_identifier(self, node: NodeType) -> str:
         # TODO: sanitize names!
@@ -66,6 +84,8 @@ class TypescriptConverter:
             return f"{self.get_identifier(node.typ)}[]"
         if isinstance(node, TupleFound):
             return f"[{', '.join([self.get_identifier(typ) for typ in node.types])}]"
+        if isinstance(node, LiteralFound):
+            return self.literal_converter(node)
         if node is unknown_found:
             return "any"
 
