@@ -17,6 +17,7 @@ from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.nodes.ListFound import ListFound
 from py_codegen.type_extractor.nodes.LiteralFound import LiteralFound
+from py_codegen.type_extractor.nodes.MappingFound import MappingFound
 from py_codegen.type_extractor.nodes.NoneNode import NoneNode
 from py_codegen.type_extractor.nodes.TupleFound import TupleFound
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
@@ -78,7 +79,10 @@ class TypescriptConverter:
             return f"I{node.name}"
         if isinstance(node, TypeOR):
             return f"{self.get_identifier(node.a)} | {self.get_identifier(node.b)}"
+        # FIXME: need to handle type(key) == int / float / etc.
         if isinstance(node, DictFound):
+            return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
+        if isinstance(node, MappingFound):
             return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
         if isinstance(node, ListFound):
             return f"{self.get_identifier(node.typ)}[]"

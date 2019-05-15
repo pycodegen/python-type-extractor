@@ -10,6 +10,7 @@ from py_codegen.test_fixtures.func_not_annotated import func_not_annotated
 from py_codegen.test_fixtures.func_return_none import func_return_nullable
 from py_codegen.test_fixtures.func_with_tuple import func_with_tuple
 from py_codegen.test_fixtures.func_with_literals import func_with_literals
+from py_codegen.test_fixtures.func_with_mapping import func_with_mapping
 
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 
@@ -38,3 +39,4 @@ generate_and_write_ts_definition(func_not_annotated)
 generate_and_write_ts_definition(func_return_nullable)
 generate_and_write_ts_definition(func_with_tuple)
 generate_and_write_ts_definition(func_with_literals)
+generate_and_write_ts_definition(func_with_mapping)
