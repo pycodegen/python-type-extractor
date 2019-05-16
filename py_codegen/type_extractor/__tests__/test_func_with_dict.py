@@ -1,6 +1,7 @@
 from py_codegen.type_extractor.__tests__.utils import cleanup, traverse
 from py_codegen.type_extractor.nodes.DictFound import DictFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
+from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 from py_codegen.test_fixtures.func_with_dict import func_with_dict
 
@@ -20,7 +21,7 @@ def test_func_with_dict():
             params={
                 'input': DictFound(key=str, value=int),
             },
-            return_type=DictFound(key=str, value=int),
+            return_type=DictFound(key=unknown_found, value=unknown_found),
         ),
         cleanup,
     )

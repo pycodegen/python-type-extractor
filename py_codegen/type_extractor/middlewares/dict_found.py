@@ -3,9 +3,15 @@ from typing import Dict
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
 from py_codegen.type_extractor.middlewares.__common__ import get_typ_origin, get_typ_args
 from py_codegen.type_extractor.nodes.DictFound import DictFound
+from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
 
 
 def dict_found_middleware(typ, type_extractor: BaseTypeExtractor):
+    if typ == Dict:  # for `Dict`
+        return DictFound(
+            key=unknown_found,
+            value=unknown_found,
+        )
     typ_origin = get_typ_origin(typ)
     if typ_origin is not dict and typ_origin is not Dict:
         return
