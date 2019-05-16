@@ -17,7 +17,7 @@ jobs:
             - pip-packages-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements_docgen.txt" }}
       - run:
           name: link pip package folder
-          command: ln -s `python -m site --user-site` user-site-packages
+          command: (ln -s `python -m site --user-site` user-site-packages) || echo "link pip package folder"
       - run:
           name: Install Dependencies
           command: |
