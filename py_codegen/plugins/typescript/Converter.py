@@ -35,17 +35,22 @@ LiteralConverterType = Callable[
     str,
 ]
 
-def default_literal_converter(node: LiteralFound) -> str:
-    if isinstance(node.value, str):
-        return f"'{node.value}'"
-    elif isinstance(node.value, int) \
-            or isinstance(node.value, float):
-        return f"{node.value}"
-    elif node.value == True:
+
+def default_literal_converter(val) -> str:
+    if isinstance(val, str):
+        return f"'{val}'"
+    if isinstance(val, int) \
+            or isinstance(val, float):
+        return f"{val}"
+    if val == True:
         return "true"
-    elif node.value == False:
+    if val == False:
         return "false"
-    raise NotImplementedError(f"default_literal_converter cannot handle ${node.value}")
+    if isinstance(val, list):
+        converted = [default_literal_converter(item) for item in val]
+        converted_str = ','.join(converted)
+        return f"[{converted_str}]"
+    raise NotImplementedError(f"default_literal_converter cannot handle {node.value}")
 
 
 class TypescriptConverter:
@@ -89,7 +94,7 @@ class TypescriptConverter:
         if isinstance(node, TupleFound):
             return f"[{', '.join([self.get_identifier(typ) for typ in node.types])}]"
         if isinstance(node, LiteralFound):
-            return self.literal_converter(node)
+            return self.literal_converter(node.value)
         if node is unknown_found:
             return "any"
 
