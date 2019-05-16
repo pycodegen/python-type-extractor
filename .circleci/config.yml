@@ -31,7 +31,7 @@ jobs:
             - user-site-packages
       - run:
           name: build_doc
-          command: python docgen/
+          command: python docgen/docgen.py
       - run:
           name: pull-merge-build-forcepush
           command: |
