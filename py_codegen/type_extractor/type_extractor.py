@@ -48,9 +48,9 @@ class TypeExtractor(BaseTypeExtractor):
         literal_found_middleware,
         dict_found_middleware,
         tuple_found_middleware,
+        mapping_found_middleware,
         class_found_middleware,
         func_found_middleware,
-        mapping_found_middleware,
         none_node_middleware,
         builtin_middleware,
         typeddict_found_middleware,
@@ -84,13 +84,9 @@ class TypeExtractor(BaseTypeExtractor):
 
     def rawtype_to_node(self, typ, options=None):
         for middleware in self.middlewares:
-            # noinspection PyBroadException
-            try:
-                value = middleware(typ, self)
-                if value is not None:
-                    return value
-            except Exception as e:
-                pass
+            value = middleware(typ, self)
+            if value is not None:
+                return value
         return unknown_found
 
         # if typ is inspect._empty:
