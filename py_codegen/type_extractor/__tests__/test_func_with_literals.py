@@ -23,8 +23,11 @@ def test_func_with_list():
                     b=TypeOR(
                         a=LiteralFound(1),
                         b=TypeOR(
-                            a=LiteralFound(2),
-                            b=LiteralFound(3),
+                            a=TypeOR(
+                                a=LiteralFound(2),
+                                b=LiteralFound(3),
+                            ),
+                            b=LiteralFound([True, 3]),
                         ),
                     ),
                 ),
