@@ -1,0 +1,44 @@
+#user.email: devdoomari@gmail.com
+#user.name: devdoomari-circlei
+jobs:
+  push_dist:
+    docker:
+      - image: circleci/python:3.7.3
+    steps:
+      - checkout
+      - run:
+          name: Set git username/email
+          command: mkdir -p ~/.git
+                   && git config --global user.email "devdoomari@gmail.com"
+                   && git config --global user.name "devdoomari.circleci"
+      - restore_cache:
+          name: Restore pip package cache
+          keys:
+            - pip-packages-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements_docgen.txt" }}
+      - run:
+          name: link pip package folder
+          command: (ln -s `python -m site --user-site` user-site-packages) || echo "link pip package folder"
+      - run:
+          name: Install Dependencies
+          command: |
+            pip install --user -r requirements.txt &&
+            pip install --user -r requirements_docgen.txt &&
+            echo "python deps installed"
+      - save_cache:
+          name: Save pip Package Cache
+          key: pip-packages-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements_docgen.txt" }}
+          paths:
+            - user-site-packages
+      - run:
+          name: build_doc
+          command: python docgen/docgen.py
+      - run:
+          name: pull-merge-build-forcepush
+          command: |
+            source .circleci/circleci_env.sh && ./scripts/git_build_and_push_dist.sh
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - push_dist
+

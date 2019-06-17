@@ -1,16 +1,13 @@
-Python Packaging User Guide
- (continued from previous page)
-], )
-author_email="author@example.com",
-description="A small example package",
-long_description=long_description,
-long_description_content_type="text/markdown",
-url="https://github.com/pypa/sampleproject",
-packages=setuptools.find_packages(),
-classifiers=[
-"Programming Language :: Python :: 3",
-"License :: OSI Approved :: MIT License",
-"Operating System :: OS Independent",
-# Example Package
-This is a simple example package. You can use
-[Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/) to write your content.
+# PyCodegen: Generate code from python types!
+
+# Steps involved:
+
+1. convert python code -> intermediary-format: "type-extractor"
+ - implementation [py_codegen/type_extractor](py_codegen/type_extractor)
+ - [intermediary-format implementations](py_codegen/type_extractor/nodes/README.md)
+
+2. convert intermediate-format -> custom generated code
+ - 100% customizable as "plugins"
+
+# Examples of python -> intermediary-format:
+ -
