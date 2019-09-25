@@ -50,7 +50,9 @@ def default_literal_converter(val) -> str:
         converted = [default_literal_converter(item) for item in val]
         converted_str = ','.join(converted)
         return f"[{converted_str}]"
-    raise NotImplementedError(f"default_literal_converter cannot handle {node.value}")
+    if val is None:
+        return "null"
+    raise NotImplementedError(f"default_literal_converter cannot handle {val}")
 
 
 class TypescriptConverter:

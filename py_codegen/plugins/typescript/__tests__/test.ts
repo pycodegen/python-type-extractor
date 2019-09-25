@@ -21,6 +21,7 @@ function runTests() {
   runTest('func_not_annotated');
   runTest('func_return_nullable');
   runTest('func_with_tuple');
+  runTest('func_with_literals')
 }
 
 describe('pycodegen::typescript should...', () => {
