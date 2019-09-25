@@ -19,7 +19,7 @@ function runTests() {
   runTest('func_with_list');
   runTest('func_with_typed_dict');
   runTest('func_not_annotated');
-  runTest('func_return_nullable');
+  runTest('func_return_none');
   runTest('func_with_tuple');
   runTest('func_with_literals')
 }

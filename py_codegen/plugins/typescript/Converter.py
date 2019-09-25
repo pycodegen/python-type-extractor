@@ -118,4 +118,8 @@ class TypescriptConverter:
             return 'string'
         if typ == int or typ == float:
             return 'number'
+        if typ == bool:
+            return 'boolean'
+        
+        raise NotImplementedError(f'__convert_builtin not implemented for {typ}')
 
