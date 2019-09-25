@@ -12,5 +12,6 @@ export interface INestedTypedDict {
 }
 export interface IOutputType {
 		b: number,
+		'some thing': string,
 		s: SomeClass,
 }
