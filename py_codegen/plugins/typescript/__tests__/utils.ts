@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import {
   exec,
 } from 'mz/child_process';
+import * as prettier from 'prettier'
 
 export const PLUGIN_ROOT = path.join(__dirname, '../')
 
@@ -14,7 +15,9 @@ async function getAST(filename): Promise<ts.SourceFile> {
   const fileContent = await fs.readFile(filename);
   return ts.createSourceFile(
     'same_filename_for_AST_comparison.d.ts',
-    fileContent.toString(),
+    prettier.format(fileContent.toString(), {
+      parser: 'typescript',
+    }),
     ts.ScriptTarget.ES2015
   );
 }

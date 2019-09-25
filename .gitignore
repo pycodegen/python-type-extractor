@@ -12,3 +12,5 @@ dist
 venv
 venv*
 python_codegen.egg-info
+
+.DS_Store
