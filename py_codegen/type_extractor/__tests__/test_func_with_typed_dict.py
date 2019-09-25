@@ -32,6 +32,7 @@ def test_func_with_typed_dict():
             return_type=TypedDictFound(
                 annotations={
                     'b': int,
+                    'some thing': str,
                     's': ClassFound(
                         name='SomeClass',
                         fields={

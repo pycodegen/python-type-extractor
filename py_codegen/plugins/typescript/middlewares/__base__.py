@@ -11,8 +11,8 @@ def convert_params_dict(
 ):
     converted: List[str] = []
     for (field_name, node) in node_dict.items():
-        # TODO: sanitize field_name (eg. K-S --> K_S ) ?
+        _field_name = field_name if field_name.isidentifier() else f"'{field_name}'"
         converted.append(
-            f"\t{field_name}: {converter.get_identifier(node)}{ending}"
+            f"\t{_field_name}: {converter.get_identifier(node)}{ending}"
         )
     return '\n'.join(converted)
