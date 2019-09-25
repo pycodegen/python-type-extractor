@@ -5,15 +5,15 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@types/fs-extra": "^5.0.5",
-    "@types/jest": "^24.0.12",
-    "@types/lodash": "^4.14.123",
-    "@types/node": "^11.13.8",
-    "fs-extra": "^7.0.1",
-    "jest": "^24.7.1",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
+    "@types/fs-extra": "^8.0.0",
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.139",
+    "@types/node": "^12.7.7",
+    "fs-extra": "^8.1.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
   },
   "scripts": {
     "test": "jest",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@types/mz": "^0.0.32",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "mz": "^2.7.0"
   }
 }

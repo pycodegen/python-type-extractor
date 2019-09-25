@@ -31,6 +31,10 @@ def test_func_with_list():
                         ),
                     ),
                 ),
+                'input2': TypeOR(
+                    a=LiteralFound(1),
+                    b=LiteralFound(None),
+                ),
             },
             return_type=TypeOR(
                 a=LiteralFound(True),
