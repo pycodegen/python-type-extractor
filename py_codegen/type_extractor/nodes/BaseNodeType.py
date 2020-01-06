@@ -1,8 +1,13 @@
-from typing import Union
+from dataclasses import dataclass, field
+from typing import Union, Set
+
+
+class BaseOption:
+    pass
 
 
 class BaseNodeType:
-    pass
+    options: Set[BaseOption]
 
 
 NodeType = Union[BaseNodeType, type]

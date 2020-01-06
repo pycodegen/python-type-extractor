@@ -4,9 +4,9 @@ from typing import (
     Dict,
     Any,
     Callable,
-)
+    Set)
 
-from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
 
 
 @dataclass
@@ -18,6 +18,7 @@ class ClassFound(BaseNodeType):  # type: ignore
     doc: str = field(default='')
     class_raw: Optional[type] = None
     INTERNAL_fields_extra: Optional[Dict[str, Any]] = None
+    options: Set[BaseOption] = field(default_factory=set)
 
 
 def set_fields_extra(namespace: str):

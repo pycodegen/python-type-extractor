@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Callable, Any, Optional, Dict
+from typing import Callable, Any, Optional, Dict, Set
 
-from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
 
 
 @dataclass
@@ -15,6 +15,7 @@ class FunctionFound(BaseNodeType):
     filePath: str = ''
     INTERNAL_params_extra: Optional[Dict[str, Dict[str, Any]]] = None
     INTERNAL_return_extra: Optional[Dict[str, Any]] = None
+    options: Set[BaseOption] = field(default_factory=set)
 
 
 def set_params_extra(namespace: str):

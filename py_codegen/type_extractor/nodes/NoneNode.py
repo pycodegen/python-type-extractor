@@ -1,5 +1,7 @@
+from typing import Set
+
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
-from .BaseNodeType import BaseNodeType
+from .BaseNodeType import BaseNodeType, BaseOption
 
 
 class NoneNode(BaseNodeType):  # type: ignore
@@ -9,7 +11,11 @@ class NoneNode(BaseNodeType):  # type: ignore
 none_node = NoneNode()
 
 
-def none_node_middleware(typ, type_extractor: BaseTypeExtractor):
+def none_node_middleware(
+        typ,
+        type_extractor: BaseTypeExtractor,
+        options: Set[BaseOption],
+):
     if typ is type(None):
         return none_node
 

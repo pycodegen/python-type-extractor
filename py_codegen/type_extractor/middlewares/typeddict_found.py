@@ -1,10 +1,16 @@
 from mypy_extensions import _TypedDictMeta  # type: ignore
+from typing import Set
 
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseOption
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 
 
-def typeddict_found_middleware(typ, type_extractor: BaseTypeExtractor):
+def typeddict_found_middleware(
+        typ,
+        type_extractor: BaseTypeExtractor,
+        options: Set[BaseOption],
+):
     if not isinstance(typ, _TypedDictMeta):
         return
     annotations = {

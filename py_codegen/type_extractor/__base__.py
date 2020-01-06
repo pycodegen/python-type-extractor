@@ -1,7 +1,7 @@
 from abc import ABC
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Set, Optional
 
-from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
+from py_codegen.type_extractor.nodes.BaseNodeType import NodeType, BaseOption
 
 
 class BaseTypeExtractor(ABC):
@@ -20,7 +20,10 @@ class BaseTypeExtractor(ABC):
     def rawtype_to_node(self, typ) -> NodeType:
         pass
 
-    def add(self, options=None):
+    def add(
+            self,
+            options: Optional[Set[BaseOption]] = None,
+    ):
         def add_decoration(typ):
             pass
         return add_decoration

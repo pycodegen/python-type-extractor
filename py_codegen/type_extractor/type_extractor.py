@@ -9,7 +9,7 @@ from typing import (
     Union,
     List,
     Any,
-)
+    Set, Optional)
 
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
 from py_codegen.type_extractor.middlewares.class_found import class_found_middleware
@@ -20,7 +20,7 @@ from py_codegen.type_extractor.middlewares.literal_found import literal_found_mi
 from py_codegen.type_extractor.middlewares.mapping_found import mapping_found_middleware
 from py_codegen.type_extractor.middlewares.tuple_found import tuple_found_middleware
 from py_codegen.type_extractor.middlewares.type_or import typeor_middleware
-from py_codegen.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType
+from py_codegen.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType, BaseOption
 from py_codegen.type_extractor.nodes.NoneNode import none_node_middleware
 from py_codegen.type_extractor.middlewares.typeddict_found import typeddict_found_middleware
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
@@ -30,7 +30,7 @@ def is_builtin(typ):
     return inspect.getmodule(typ) is builtins
 
 
-def builtin_middleware(typ, type_extractor: 'TypeExtractor'):
+def builtin_middleware(typ, type_extractor: 'TypeExtractor', options: Set[BaseOption]):
     if is_builtin(typ):
         return typ
 
@@ -38,7 +38,7 @@ def builtin_middleware(typ, type_extractor: 'TypeExtractor'):
 class TypeExtractor(BaseTypeExtractor):
     middlewares: List[
         Callable[
-            [Any, 'TypeExtractor'],
+            [Any, 'TypeExtractor', Set[BaseOption]],
             BaseNodeType,
         ]
     ] = [
@@ -80,16 +80,22 @@ class TypeExtractor(BaseTypeExtractor):
             )
         return processed_params
 
-    def rawtype_to_node(self, typ, options=None):
+    def rawtype_to_node(
+            self, typ,
+            options: Optional[Set[BaseOption]] = None,
+    ):
         for middleware in self.middlewares:
-            value = middleware(typ, self)
+            value = middleware(typ, self, options or set())
             if value is not None:
                 return value
         return unknown_found
 
-    def add(self, options=None):
+    def add(
+            self,
+            options: Optional[Set[BaseOption]] = None,
+    ):
         def add_decoration(typ):
             if not is_builtin(typ):
-                self.rawtype_to_node(typ, options)
+                self.rawtype_to_node(typ, options or set())
             return typ
         return add_decoration

@@ -1,14 +1,23 @@
+from dataclasses import dataclass
+
 from py_codegen.test_fixtures.union_type_class import ClassWithUnionField
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseOption
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 from py_codegen.type_extractor.__tests__.utils import traverse, cleanup
 from py_codegen.type_extractor.type_extractor import TypeExtractor
 
 
+@dataclass(frozen=True)
+class SomeOption(BaseOption):
+    some_var: int
+
+
 def test_class_with_union_field():
     type_collector = TypeExtractor()
 
     type_collector.add(None)(ClassWithUnionField)
+    type_collector.add({SomeOption(some_var=1)})(ClassWithUnionField)
 
     classes = {
         key: traverse(value, cleanup)
@@ -23,6 +32,7 @@ def test_class_with_union_field():
                     a=str, b=int
                 )
             },
+            options={SomeOption(some_var=1)},
         )
     }
     functions = type_collector.functions
