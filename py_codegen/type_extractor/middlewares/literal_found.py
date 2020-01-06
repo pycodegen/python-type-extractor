@@ -1,8 +1,9 @@
-from typing import Tuple
+from typing import Tuple, Set
 from typing_extensions import Literal
 
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
 from py_codegen.type_extractor.middlewares.__common__ import get_typ_origin, get_typ_args
+from py_codegen.type_extractor.nodes.BaseNodeType import BaseOption
 from py_codegen.type_extractor.nodes.LiteralFound import LiteralFound
 from py_codegen.type_extractor.nodes.TypeOR import TypeOR
 
@@ -15,7 +16,11 @@ def __is_literal_typ(typ_origin):
                )
 
 
-def literal_found_middleware(typ, type_extractor: BaseTypeExtractor):
+def literal_found_middleware(
+        typ,
+        type_extractor: BaseTypeExtractor,
+        options: Set[BaseOption],
+):
     typ_origin = get_typ_origin(typ)
     if not __is_literal_typ(typ_origin):
         return
