@@ -11,10 +11,9 @@ def test_func_with_list():
 
     type_collector.add(None)(func_with_literals)
 
-    func_found_cleaned = cleanup(
-        type_collector.collected_types[func_with_literals.__qualname__],
-    )
-    assert func_found_cleaned == traverse(
+    original_func_found = type_collector.collected_types[func_with_literals.__qualname__]
+    func_found_cleaned = cleanup(original_func_found)
+    expected_func_found_cleaned = traverse(
         FunctionFound(
             name=func_with_literals.__qualname__,
             params={
@@ -27,7 +26,10 @@ def test_func_with_list():
                                 a=LiteralFound(2),
                                 b=LiteralFound(3),
                             ),
-                            b=LiteralFound([True, 3]),
+                            b=TypeOR(
+                                a=LiteralFound(True),
+                                b=LiteralFound(3),
+                            ),
                         ),
                     ),
                 ),
@@ -39,10 +41,11 @@ def test_func_with_list():
             return_type=TypeOR(
                 a=LiteralFound(True),
                 b=TypeOR(
-                    a=LiteralFound(0.5),
+                    a=LiteralFound(5),
                     b=LiteralFound(3),
                 ),
             )
         ),
         cleanup,
     )
+    assert func_found_cleaned == expected_func_found_cleaned

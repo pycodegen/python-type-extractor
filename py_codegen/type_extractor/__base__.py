@@ -19,3 +19,8 @@ class BaseTypeExtractor(ABC):
 
     def rawtype_to_node(self, typ) -> NodeType:
         pass
+
+    def add(self, options=None):
+        def add_decoration(typ):
+            pass
+        return add_decoration
