@@ -1,8 +1,9 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 
-from .BaseNodeType import BaseNodeType
+from .BaseNodeType import BaseNodeType, NodeType
 
 
-class TypeOR(NamedTuple, BaseNodeType):  # type: ignore
-    a: type
-    b: type
+@dataclass
+class TypeOR(BaseNodeType):  # type: ignore
+    a: NodeType
+    b: NodeType

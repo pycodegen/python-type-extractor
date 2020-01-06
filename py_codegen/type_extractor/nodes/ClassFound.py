@@ -1,20 +1,21 @@
+from dataclasses import dataclass, field
 from typing import (
     Optional,
     Dict,
     Any,
     Callable,
-    NamedTuple,
 )
 
 from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
 
 
-class ClassFound(BaseNodeType, NamedTuple):  # type: ignore
+@dataclass
+class ClassFound(BaseNodeType):  # type: ignore
     name: str
     fields: Dict[str, NodeType]
-    filePath: str = ''
-    raw_fields: Dict[str, Any] = {}
-    doc: str = ''
+    filePath: str = field(default='')
+    raw_fields: Dict[str, Any] = field(default_factory=dict)
+    doc: str = field(default='')
     class_raw: Optional[type] = None
     INTERNAL_fields_extra: Optional[Dict[str, Any]] = None
 
@@ -24,11 +25,12 @@ def set_fields_extra(namespace: str):
             class_found: ClassFound,
             extra: Dict[str, Any],
     ):
-        fields_extra = class_found.INTERNAL_fields_extra or {}
-        fields_extra[namespace] = extra
-        return class_found._replace(
-            INTERNAL_fields_extra=fields_extra,
-        )
+        class_found.INTERNAL_fields_extra = \
+            class_found.INTERNAL_fields_extra or {}
+
+        class_found.INTERNAL_fields_extra[namespace] = \
+            extra
+        return class_found
     return __set_fields_extra
 
 

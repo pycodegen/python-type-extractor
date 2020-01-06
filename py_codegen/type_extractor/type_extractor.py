@@ -80,30 +80,12 @@ class TypeExtractor(BaseTypeExtractor):
             )
         return processed_params
 
-    # def rawtype_to_node(self, typ):
-
     def rawtype_to_node(self, typ, options=None):
         for middleware in self.middlewares:
             value = middleware(typ, self)
             if value is not None:
                 return value
         return unknown_found
-
-        # if typ is inspect._empty:
-        #     return unknown_found
-        #
-        # elif inspect.isfunction(typ):
-        #     function_found = self.__to_function_found(typ)
-        #     return function_found
-        #
-        # elif inspect.isclass(typ):
-        #     class_found = self.__to_class_found(typ)
-        #     self.__add_found(class_found)
-        #     return class_found
-        #
-        # return unknown_found
-
-        # raise NotImplementedError(f'type_extractor not implemented for {typ}')
 
     def add(self, options=None):
         def add_decoration(typ):

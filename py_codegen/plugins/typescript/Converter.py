@@ -1,12 +1,14 @@
 import itertools
-from functools import reduce
-from textwrap import dedent, indent
 from typing import (
     cast,
     List,
-    Callable)
+    Callable,
+    Any,
+    Optional,
+)
+from typing_extensions import Protocol
 
-from py_codegen.plugins.typescript.__base__ import BaseTypescriptConverter
+from py_codegen.plugins.typescript.__base__ import MiddlewareType
 from py_codegen.plugins.typescript.middlewares.classes import class_middleware
 from py_codegen.plugins.typescript.middlewares.functions import functionfounds_middleware
 from py_codegen.plugins.typescript.middlewares.typeddicts import typeddicts_middleware
@@ -25,18 +27,12 @@ from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.UnknownFound import unknown_found
 from py_codegen.type_extractor.type_extractor import TypeExtractor, is_builtin
 
-MiddlewareType = Callable[
-    [BaseTypeExtractor, BaseTypescriptConverter],
-    List[str],
-]
 
-LiteralConverterType = Callable[
-    [LiteralFound],
-    str,
-]
+class LiteralConverterType(Protocol):
+    def __call__(self, val: Any) -> str: ...
 
 
-def default_literal_converter(val) -> str:
+def default_literal_converter(val: Any) -> str:
     if isinstance(val, str):
         return f"'{val}'"
     if isinstance(val, int) \
@@ -63,15 +59,15 @@ class TypescriptConverter:
     def __init__(
             self,
             extractor: TypeExtractor,
-            middlewares: List[MiddlewareType] = [
-                class_middleware,
-                functionfounds_middleware,
-                typeddicts_middleware,
-            ],
+            middlewares: Optional[List[MiddlewareType]] = None,
             literal_converter: LiteralConverterType = default_literal_converter,
     ):
         self.extractor = extractor
-        self.middlewares = middlewares
+        self.middlewares = middlewares or [
+            class_middleware,
+            functionfounds_middleware,
+            typeddicts_middleware,
+        ]
         self.literal_converter = literal_converter
 
     def get_identifier(self, node: NodeType) -> str:
@@ -105,6 +101,16 @@ class TypescriptConverter:
 
         raise NotImplementedError(f'get_identifier not implemented for {node}')
 
+    def __convert_builtin(self, typ: type):
+        if typ == str:
+            return 'string'
+        if typ == int or typ == float:
+            return 'number'
+        if typ == bool:
+            return 'boolean'
+
+        raise NotImplementedError(f'__convert_builtin not implemented for {typ}')
+
     def run(self):
         r: List[List[str]] = [
             middleware(self.extractor, self)
@@ -113,13 +119,4 @@ class TypescriptConverter:
         merged: List[str] = list(itertools.chain.from_iterable(r))
         return '\n'.join(merged)
 
-    def __convert_builtin(self, typ: type):
-        if typ == str:
-            return 'string'
-        if typ == int or typ == float:
-            return 'number'
-        if typ == bool:
-            return 'boolean'
-        
-        raise NotImplementedError(f'__convert_builtin not implemented for {typ}')
 

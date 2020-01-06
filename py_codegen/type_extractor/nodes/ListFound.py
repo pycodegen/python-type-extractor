@@ -1,9 +1,10 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 
 from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
 
 
-class ListFound(NamedTuple, BaseNodeType):  # type: ignore
+@dataclass
+class ListFound(BaseNodeType):  # type: ignore
     typ: NodeType
 
 

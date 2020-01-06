@@ -1,10 +1,8 @@
-from typing import NamedTuple
-
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
 from .BaseNodeType import BaseNodeType
 
 
-class NoneNode(NamedTuple, BaseNodeType):  # type: ignore
+class NoneNode(BaseNodeType):  # type: ignore
     pass
 
 

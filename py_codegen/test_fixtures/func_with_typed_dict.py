@@ -24,5 +24,6 @@ OutputType = TypedDict('OutputType', {
 def func_with_typed_dict(input: NestedTypedDict) -> OutputType:
     return {
         'b': len(str(input['child']['a'])),
-        's': SomeClass(123)
+        'some thing': 'asd',
+        's': SomeClass(123),
     }

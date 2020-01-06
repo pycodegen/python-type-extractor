@@ -18,7 +18,7 @@ def class_found_middleware(_class, type_extractor: BaseTypeExtractor):
     _data_class = dataclass(_class)
     argspec = inspect.getfullargspec(_data_class)
     module = inspect.getmodule(_class)
-    filename = module.__file__
+    filename = module and module.__file__
     fields = type_extractor.params_to_nodes(argspec.annotations, argspec.args)
     class_found = ClassFound(
         name=_class.__name__,
