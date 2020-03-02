@@ -30,6 +30,11 @@ def class_found_middleware(
         return duplicate
 
     _data_class = dataclass(_class)
+    base_classes = [
+        type_extractor.rawtype_to_node(base_cls)
+        for base_cls in list(_class.__bases__)
+        if base_cls is not object and base_cls is not tuple
+    ]
     argspec = inspect.getfullargspec(_data_class)
     module = inspect.getmodule(_class)
     filename = module and module.__file__
@@ -38,6 +43,7 @@ def class_found_middleware(
         name=_class.__name__,
         class_raw=_class,
         filePath=filename,
+        base_classes=base_classes,
         raw_fields=argspec.annotations,
         fields=fields,
         doc=_class.__doc__,
