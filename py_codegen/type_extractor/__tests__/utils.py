@@ -22,6 +22,10 @@ def traverse(node: NodeType, func: traverse_func_type):
             key: traverse(value, func)
             for (key, value) in node.fields.items()
         }
+        class_found_node.base_classes = [
+            traverse(base_class, func)
+            for base_class in node.base_classes
+        ]
         return func(class_found_node)
     if isinstance(node, FunctionFound):
         function_found_node = copy(node)
