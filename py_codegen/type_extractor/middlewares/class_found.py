@@ -39,6 +39,17 @@ def class_found_middleware(
     module = inspect.getmodule(_class)
     filename = module and module.__file__
     fields = type_extractor.params_to_nodes(argspec.annotations, argspec.args)
+    # methods = [
+    #     type_extractor.rawtype_to_node(method)
+    #     for (name, method) in inspect.getmembers(_class, predicate=inspect.isfunction)
+    #     and not name.
+    # ]
+    methods = [
+        # type_extractor.rawtype_to_node(method, )
+        (name, method)
+        for name, method in inspect.getmembers(_class, predicate=inspect.isfunction)
+        if name.startswith('__')
+    ]
     class_found = ClassFound(
         name=_class.__name__,
         class_raw=_class,

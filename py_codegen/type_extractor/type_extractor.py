@@ -80,6 +80,8 @@ class TypeExtractor(BaseTypeExtractor):
             )
         return processed_params
 
+    def method_to_node(self, typ, parent_class):
+
     def rawtype_to_node(
             self, typ,
             options: Optional[Set[BaseOption]] = None,

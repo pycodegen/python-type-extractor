@@ -24,8 +24,8 @@ class ClassFound(BaseNodeType):  # type: ignore
 
 def set_fields_extra(namespace: str):
     def __set_fields_extra(
-            class_found: ClassFound,
-            extra: Dict[str, Any],
+        class_found: ClassFound,
+        extra: Dict[str, Any],
     ):
         class_found.INTERNAL_fields_extra = \
             class_found.INTERNAL_fields_extra or {}
