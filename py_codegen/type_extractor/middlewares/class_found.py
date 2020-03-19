@@ -1,9 +1,10 @@
 import inspect
+import typing_inspect
 
 from dataclasses import dataclass
 
 from mypy_extensions import _TypedDictMeta  # type: ignore
-from typing import Set
+from typing import Set, Dict, cast, List, Generic
 
 from py_codegen.type_extractor.__base__ import BaseTypeExtractor
 from py_codegen.type_extractor.nodes.BaseNodeType import BaseOption
@@ -30,15 +31,25 @@ def class_found_middleware(
         return duplicate
 
     _data_class = dataclass(_class)
-    base_classes = [
+
+    base_classes = cast(List[ClassFound], [
         type_extractor.rawtype_to_node(base_cls)
         for base_cls in list(_class.__bases__)
-        if base_cls is not object and base_cls is not tuple
-    ]
+        if base_cls is not object and
+           base_cls is not tuple and
+           base_cls is not Generic
+    ])
+
     argspec = inspect.getfullargspec(_data_class)
     module = inspect.getmodule(_class)
     filename = module and module.__file__
-    fields = type_extractor.params_to_nodes(argspec.annotations, argspec.args)
+    annotations: Dict = getattr(_class, '__annotations__', argspec.annotations)
+    fields = type_extractor.params_to_nodes(annotations, annotations.keys())
+    type_vars = [
+        type_extractor.rawtype_to_node(_typevar)
+        for _typevar in
+        list(typing_inspect.get_parameters(_class))
+    ]
     class_found = ClassFound(
         name=_class.__name__,
         class_raw=_class,
@@ -48,6 +59,7 @@ def class_found_middleware(
         fields=fields,
         doc=_class.__doc__,
         options=options,
+        type_vars=type_vars,
     )
 
     type_extractor.collected_types[class_found.name] = class_found

@@ -3,6 +3,8 @@ from copy import deepcopy, copy
 from typing import Callable
 
 from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
+from py_codegen.type_extractor.nodes.FixedGenericFound import FixedGenericFound
+from py_codegen.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
@@ -47,6 +49,24 @@ def traverse(node: NodeType, func: traverse_func_type):
         typeor_node.a = traverse(node.a, func)
         typeor_node.b = traverse(node.b, func)
         return func(typeor_node)
+
+    if isinstance(node, FixedGenericFound):
+        fixed_generic_node = copy(node)
+        fixed_generic_node.origin = traverse(
+            node.origin, func
+        )
+        fixed_generic_node.type_vars = [
+            traverse(node_type_vars, func)
+            for node_type_vars in node.type_vars
+        ]
+        return func(fixed_generic_node)
+
+    if isinstance(node, TypeVarFound):
+        typevar_node = copy(node)
+        typevar_node.original = traverse(
+            node.original, func
+        )
+        return func(typevar_node)
     return node
 
 
