@@ -4,9 +4,11 @@ from typing import (
     Dict,
     Any,
     Callable,
-    Set, List)
+    Set, List,
+)
 
 from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
+from py_codegen.type_extractor.nodes.TypeVarFound import TypeVarFound
 
 
 @dataclass
@@ -17,6 +19,7 @@ class ClassFound(BaseNodeType):  # type: ignore
     raw_fields: Dict[str, Any] = field(default_factory=dict)
     doc: str = field(default='')
     base_classes: List['ClassFound'] = field(default_factory=list)
+    type_vars: List[TypeVarFound] = field(default_factory=list)
     class_raw: Optional[type] = None
     INTERNAL_fields_extra: Optional[Dict[str, Any]] = None
     options: Set[BaseOption] = field(default_factory=set)
