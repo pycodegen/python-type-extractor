@@ -4,6 +4,7 @@ from typing import Callable
 
 from py_codegen.type_extractor.nodes.BaseNodeType import NodeType
 from py_codegen.type_extractor.nodes.FixedGenericFound import FixedGenericFound
+from py_codegen.type_extractor.nodes.NewType import NewTypeFound
 from py_codegen.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_codegen.type_extractor.nodes.TypedDictFound import TypedDictFound
 from py_codegen.type_extractor.nodes.ClassFound import ClassFound
@@ -67,6 +68,12 @@ def traverse(node: NodeType, func: traverse_func_type):
             node.original, func
         )
         return func(typevar_node)
+    if isinstance(node, NewTypeFound):
+        newtype_found = copy(node)
+        newtype_found.actual = traverse(
+            node.actual, func
+        )
+        return func(newtype_found)
     return node
 
 
