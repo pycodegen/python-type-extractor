@@ -1,6 +1,5 @@
-setuptools>=43.0.0
-dataclasses>=0.6
-extractor>=0.5
-typing>=3.7.4.1
-typing_inspect>=0.5.0
-mypy>=0.761
+dataclasses==0.7          # via py_codegen (setup.py)
+mypy-extensions==0.4.3    # via mypy, py_codegen (setup.py)
+mypy==0.770               # via py_codegen (setup.py)
+typed-ast==1.4.1          # via mypy
+typing-extensions==3.7.4.2  # via mypy
