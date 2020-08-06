@@ -20,7 +20,8 @@ def fixed_generic_found_middleware(
 
     origin = typing_inspect.get_origin(typ)
 
-    if origin is typ:
+    if origin is typ \
+            or origin is None:
         return None
 
     origin_node = type_extractor.rawtype_to_node(origin)
