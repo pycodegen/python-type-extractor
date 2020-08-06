@@ -8,6 +8,7 @@ from typing import (
 )
 
 from py_codegen.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
+from py_codegen.type_extractor.nodes.FunctionFound import FunctionFound
 from py_codegen.type_extractor.nodes.TypeVarFound import TypeVarFound
 
 
@@ -20,6 +21,7 @@ class ClassFound(BaseNodeType):  # type: ignore
     doc: str = field(default='')
     base_classes: List['ClassFound'] = field(default_factory=list)
     type_vars: List[TypeVarFound] = field(default_factory=list)
+    custom_methods: Dict[str, FunctionFound] = field(default_factory=dict)
     class_raw: Optional[type] = None
     INTERNAL_fields_extra: Optional[Dict[str, Any]] = None
     options: Set[BaseOption] = field(default_factory=set)

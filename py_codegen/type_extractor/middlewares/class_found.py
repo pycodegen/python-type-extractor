@@ -12,6 +12,19 @@ from py_codegen.type_extractor.nodes.ClassFound import ClassFound
 from py_codegen.type_extractor.utils import is_builtin
 
 
+def is_custom_method(maybe_class_method):
+    if not inspect.isfunction(maybe_class_method)\
+            and not inspect.ismethod(maybe_class_method):
+        return False
+
+    try:
+        inspect.getsource(maybe_class_method)
+        return True
+
+    except:
+        return False
+
+
 def class_found_middleware(
         _class,
         type_extractor: BaseTypeExtractor,
@@ -29,7 +42,6 @@ def class_found_middleware(
                and duplicate.class_raw == _class
         duplicate.options = duplicate.options.union(options)
         return duplicate
-
     _data_class = dataclass(_class)
 
     base_classes = cast(List[ClassFound], [
@@ -50,12 +62,18 @@ def class_found_middleware(
         for _typevar in
         list(typing_inspect.get_parameters(_class))
     ]
+    custom_methods_raw = inspect.getmembers(_class, predicate=is_custom_method)
+    custom_methods = {
+        name: type_extractor.rawtype_to_node(method)
+        for (name, method) in custom_methods_raw
+    }
     class_found = ClassFound(
         name=_class.__name__,
         class_raw=_class,
         filePath=filename,
         base_classes=base_classes,
         raw_fields=argspec.annotations,
+        custom_methods=custom_methods,
         fields=fields,
         doc=_class.__doc__,
         options=options,

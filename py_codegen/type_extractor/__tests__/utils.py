@@ -25,6 +25,11 @@ def traverse(node: NodeType, func: traverse_func_type):
             key: traverse(value, func)
             for (key, value) in node.fields.items()
         }
+        class_found_node.custom_methods = {
+            name: traverse(custom_method, func)
+            for (name, custom_method) in node.custom_methods.items()
+        }
+
         class_found_node.base_classes = [
             traverse(base_class, func)
             for base_class in node.base_classes

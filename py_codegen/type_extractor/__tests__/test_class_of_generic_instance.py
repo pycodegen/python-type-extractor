@@ -39,6 +39,11 @@ def test_class_of_generic_instance():
         type_vars=[
             some_typevar_A, some_typevar_B,
         ],
+        custom_methods={
+            '__new__': FunctionFound(
+                name='__new__'
+            ),
+        }
     )
     some_class = ClassFound(
         name='SomeClass',

@@ -1,5 +1,5 @@
 setuptools>=43.0.0
-dataclasses>=0.7
+dataclasses>=0.6
 extractor>=0.5
 typing>=3.7.4.3
 typing_inspect>=0.6.0
