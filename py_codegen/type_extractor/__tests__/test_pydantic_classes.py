@@ -21,21 +21,19 @@ def test_various_classes():
         for (key, value) in type_extractor.collected_types.items()
         if isinstance(value, ClassFound)
     }
-    assert classes == {
-        'BaseModel': classes['BaseModel'],
-        'SomePydanticDataClass': ClassFound(
-            name='SomePydanticDataClass',
-            fields={
-                'a': int,
-                'b': str,
-            },
-        ),
-        'SomePydanticModelClass': ClassFound(
-            name='SomePydanticModelClass',
-            fields={
-                'c': int,
-                'something': float,
-            },
-            base_classes=[classes['BaseModel']],
-        ),
-    }
+    assert classes['SomePydanticDataClass'] == ClassFound(
+        name='SomePydanticDataClass',
+        fields={
+            'a': int,
+            'b': str,
+        },
+    )
+
+    assert classes['SomePydanticModelClass'] == ClassFound(
+        name='SomePydanticModelClass',
+        fields={
+            'c': int,
+            'something': float,
+        },
+        base_classes=[classes['BaseModel']],
+    )
