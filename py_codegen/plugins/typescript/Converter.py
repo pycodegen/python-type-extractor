@@ -35,13 +35,14 @@ class LiteralConverterType(Protocol):
 def default_literal_converter(val: Any) -> str:
     if isinstance(val, str):
         return f"'{val}'"
+
+    if val is True:
+        return "true"
+    if val is False:
+        return "false"
     if isinstance(val, int) \
             or isinstance(val, float):
         return f"{val}"
-    if val == True:
-        return "true"
-    if val == False:
-        return "false"
     if isinstance(val, list):
         converted = [default_literal_converter(item) for item in val]
         converted_str = ','.join(converted)

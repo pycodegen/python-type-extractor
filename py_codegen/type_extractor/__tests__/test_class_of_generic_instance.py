@@ -51,27 +51,13 @@ def test_class_of_generic_instance():
     assert collected_types['SomeClass'] == some_class
 
     assert collected_types['some_func_with_generic_inst'] == FunctionFound(
-            name='some_func_with_generic_inst',
-            params={
-                'input': FixedGenericFound(
-                    type_vars=[float, some_class],
-                    origin=some_generic_class,
-                )
-            },
-            return_type=str,
-        )
-    #
-    # assert collected_types == {
-    #     'SomeGenericClass': some_generic_class,
-    #     'SomeClass': some_class,
-    #     'some_func_with_generic_inst': FunctionFound(
-    #         name='some_func_with_generic_inst',
-    #         params={
-    #             'input': FixedGenericFound(
-    #                 type_vars=[float, some_class],
-    #                 origin=some_generic_class,
-    #             )
-    #         },
-    #         return_type=str,
-    #     )
-    # }
+        name='some_func_with_generic_inst',
+        params={
+            'input': FixedGenericFound(
+                type_vars=[float, some_class],
+                origin=some_generic_class,
+            )
+        },
+        return_type=str,
+    )
+
