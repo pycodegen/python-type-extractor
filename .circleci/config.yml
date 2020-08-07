@@ -47,16 +47,16 @@ jobs:
             - '~/.nvm'
 
       - restore_cache:
-          key: yarn-{{ .Branch }}-{{ checksum "py_codegen/plugins/typescript/yarn.lock" }}
+          key: yarn-{{ .Branch }}-{{ checksum "py_type_extractor/plugins/typescript/yarn.lock" }}
       - run:
           command: |
             source .circleci/nvm_env.sh
             cd py_codegen/plugins/typescript
             yarn
       - save_cache:
-          key: yarn-{{ .Branch }}-{{ checksum "py_codegen/plugins/typescript/yarn.lock" }}
+          key: yarn-{{ .Branch }}-{{ checksum "py_type_extractor/plugins/typescript/yarn.lock" }}
           paths:
-              - 'py_codegen/plugins/typescript/node_modules'
+              - 'py_type_extractor/plugins/typescript/node_modules'
       - run:
           command: |
             source venv/bin/activate
