@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='py_codegen',
+    name='py_type_extractor',
     version='0.0.1',
     author="Dev Doomari",
     author_email="devdoomari@gmail.com",
