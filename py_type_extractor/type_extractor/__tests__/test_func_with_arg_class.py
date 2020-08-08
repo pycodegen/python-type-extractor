@@ -20,7 +20,7 @@ def test_func_with_arg_class():
         cleanup,
     )
     arg_class_found = ClassFound(
-        name='ArgClass',
+        name='test_func_with_arg_class.ArgClass',
         fields={
             'arg1': str,
             'arg2': int,

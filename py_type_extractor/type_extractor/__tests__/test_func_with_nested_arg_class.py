@@ -21,13 +21,17 @@ def test_func_with_nested_arg_class():
 
     cleanedup = traverse(
         type_collector.collected_types[
-            'py_type_extractor.type_extractor.__tests__.test_func_with_nested_arg_class.ParentClass'
+            'py_type_extractor.type_extractor'
+            '.__tests__'
+            '.test_func_with_nested_arg_class'
+            '.test_func_with_nested_arg_class'
+            '.ParentClass'
         ],
         cleanup,
     )
 
     child_class = ClassFound(
-        name='ChildClass',
+        name='test_func_with_nested_arg_class.ChildClass',
         fields={
             'return': None,
             'carg1': str,
@@ -38,7 +42,7 @@ def test_func_with_nested_arg_class():
         class_raw=ChildClass,
     )
     parent_class = ClassFound(
-        name="ParentClass",
+        name="test_func_with_nested_arg_class.ParentClass",
         fields={
             'return': None,
             'parg1': str,

@@ -26,7 +26,7 @@ def class_found_middleware(
     module = inspect.getmodule(_class)
     module_name = module.__name__
 
-    name = _class.__name__
+    name = _class.__qualname__.replace('.<locals>', '')
 
     duplicate = type_extractor.collected_types.get(f"{module_name}.{name}")
     if duplicate is not None:
