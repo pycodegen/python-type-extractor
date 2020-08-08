@@ -26,7 +26,7 @@ def test_class_of_generic_origin():
         original=SomeTypeVarB,
     )
     assert classes == {
-        'SomeGenericClass': ClassFound(
+        'py_type_extractor.test_fixtures.generic_classes.SomeGenericClass': ClassFound(
             name='SomeGenericClass',
             fields={
                 'a': typevar_A,

@@ -25,7 +25,7 @@ def test_class_with_union_field():
         if isinstance(value, ClassFound)
     }
     assert classes == {
-        'ClassWithUnionField': ClassFound(
+        'py_type_extractor.test_fixtures.union_type_class.ClassWithUnionField': ClassFound(
             name='ClassWithUnionField',
             fields={
                 'cwufField1': TypeOR(

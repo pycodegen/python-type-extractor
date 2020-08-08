@@ -28,9 +28,9 @@ def test_classes_with_inheritance():
         },
     )
     assert classes == {
-        'ParentClassA': parent_class_a,
-        'ParentClassB': parent_class_b,
-        'ChildClass': ClassFound(
+        'py_type_extractor.test_fixtures.classes_with_inheritance.ParentClassA': parent_class_a,
+        'py_type_extractor.test_fixtures.classes_with_inheritance.ParentClassB': parent_class_b,
+        'py_type_extractor.test_fixtures.classes_with_inheritance.ChildClass': ClassFound(
             name='ChildClass',
             fields={
                 'b': str,
