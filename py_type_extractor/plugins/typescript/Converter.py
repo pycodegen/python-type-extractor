@@ -76,9 +76,9 @@ class TypescriptConverter:
         if isinstance(node, NoneNode):
             return 'null'
         if isinstance(node, ClassFound):
-            return node.name
+            return node.name.replace('.', '__')
         if isinstance(node, FunctionFound):
-            return node.name
+            return node.name.replace('.', '__')
         if isinstance(node, TypedDictFound):
             return f"I{node.name}"
         if isinstance(node, TypeOR):
