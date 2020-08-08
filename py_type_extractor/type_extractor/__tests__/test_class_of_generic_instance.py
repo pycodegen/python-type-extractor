@@ -46,9 +46,13 @@ def test_class_of_generic_instance():
             'some_property': int,
         }
     )
-    assert collected_types['SomeGenericClass'] == some_generic_class
+    assert collected_types[
+       'py_type_extractor.test_fixtures.generic_classes.SomeGenericClass'
+   ] == some_generic_class
 
-    assert collected_types['SomeClass'] == some_class
+    assert collected_types[
+       'py_type_extractor.test_fixtures.generic_classes.SomeClass'
+   ] == some_class
 
     assert collected_types['some_func_with_generic_inst'] == FunctionFound(
         name='some_func_with_generic_inst',

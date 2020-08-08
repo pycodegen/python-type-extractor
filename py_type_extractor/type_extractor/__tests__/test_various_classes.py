@@ -21,20 +21,20 @@ def test_various_classes():
         if isinstance(value, ClassFound)
     }
     assert classes == {
-        'SomeDataClass': ClassFound(
+        'py_type_extractor.test_fixtures.various_classes.SomeDataClass': ClassFound(
             name='SomeDataClass',
             fields={
                 'sdcArg1': int,
                 'sdcArg2': str,
             },
         ),
-        'SomeNormalClass': ClassFound(
+        'py_type_extractor.test_fixtures.various_classes.SomeNormalClass': ClassFound(
             name='SomeNormalClass',
             fields={
                 'checklist': DictFound(key=str, value=bool),
             },
         ),
-        'SomeNamedTuple': ClassFound(
+        'py_type_extractor.test_fixtures.various_classes.SomeNamedTuple': ClassFound(
             name='SomeNamedTuple',
             fields={
                 'sntArg1': int,

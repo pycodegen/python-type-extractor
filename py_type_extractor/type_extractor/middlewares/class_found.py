@@ -23,7 +23,12 @@ def class_found_middleware(
             or isinstance(_class, _TypedDictMeta):
         return None
 
-    duplicate = type_extractor.collected_types.get(_class.__name__)
+    module = inspect.getmodule(_class)
+    module_name = module.__name__
+
+    name = _class.__name__
+
+    duplicate = type_extractor.collected_types.get(f"{module_name}.{name}")
     if duplicate is not None:
         assert isinstance(duplicate, ClassFound) \
                and duplicate.class_raw == _class
@@ -41,7 +46,7 @@ def class_found_middleware(
     ])
 
     argspec = inspect.getfullargspec(_data_class)
-    module = inspect.getmodule(_class)
+
     filename = module and module.__file__
     annotations: Dict = getattr(_class, '__annotations__', argspec.annotations)
     fields = type_extractor.params_to_nodes(annotations, annotations.keys())
@@ -51,7 +56,7 @@ def class_found_middleware(
         list(typing_inspect.get_parameters(_class))
     ]
     class_found = ClassFound(
-        name=_class.__name__,
+        name=name,
         class_raw=_class,
         filePath=filename,
         base_classes=base_classes,
@@ -62,5 +67,5 @@ def class_found_middleware(
         type_vars=type_vars,
     )
 
-    type_extractor.collected_types[class_found.name] = class_found
+    type_extractor.collected_types[f"{module_name}.{name}"] = class_found
     return class_found

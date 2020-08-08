@@ -37,7 +37,7 @@ def test_newtype():
             },
             return_type=str,
         ),
-        'SomeClass': some_class,
+        'py_type_extractor.test_fixtures.new_type.SomeClass': some_class,
         'SomeClassInNewType': NewTypeFound(
             name='SomeClassInNewType',
             actual=some_class,
