@@ -74,7 +74,7 @@ class TypescriptConverter:
     def get_identifier(self, node: NodeType) -> str:
         # TODO: sanitize names!
         if isinstance(node, NoneNode):
-            return 'null'
+            return 'null | undefined'
         if isinstance(node, ClassFound):
             return node.name.replace('.', '__')
         if isinstance(node, FunctionFound):
