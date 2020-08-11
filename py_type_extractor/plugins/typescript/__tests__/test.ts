@@ -22,6 +22,7 @@ function runTests() {
   runTest('func_return_none');
   runTest('func_with_tuple');
   runTest('func_with_literals')
+  runTest('func_with_builtin_type_args')
 }
 
 describe('pycodegen::typescript should...', () => {

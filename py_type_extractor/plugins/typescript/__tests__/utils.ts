@@ -31,7 +31,7 @@ export async function getFixtureAST(name: string) {
 }
 
 export async function prepare() {
-  await exec('python -m py_codegen.plugins.typescript.__tests__.generate_ts_definitions', {
+  await exec('python -m py_type_extractor.plugins.typescript.__tests__.generate_ts_definitions', {
     cwd: PROJECT_ROOT,
   })
 }

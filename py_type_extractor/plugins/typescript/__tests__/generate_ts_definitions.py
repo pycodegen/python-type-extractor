@@ -1,6 +1,7 @@
 from typing import Callable
 
 from py_type_extractor.plugins.typescript.Converter import TypescriptConverter
+from py_type_extractor.test_fixtures.func_with_builtin_type_args import func_with_builtin_type_args
 
 from py_type_extractor.test_fixtures.union_type_class import ClassWithUnionField
 from py_type_extractor.test_fixtures.func_with_dict import func_with_dict
@@ -40,3 +41,4 @@ generate_and_write_ts_definition(func_return_none)
 generate_and_write_ts_definition(func_with_tuple)
 generate_and_write_ts_definition(func_with_literals)
 generate_and_write_ts_definition(func_with_mapping)
+generate_and_write_ts_definition(func_with_builtin_type_args)
