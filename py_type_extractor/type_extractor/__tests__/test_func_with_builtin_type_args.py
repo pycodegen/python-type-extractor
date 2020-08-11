@@ -19,11 +19,13 @@ def test_func_with_builtin_type_args():
         params={
             'return': int,
             'a': int,
+            'b': str,
         },
         doc='',
         return_type=int,
         #
         func=None,
-        filePath=None,
-        raw_params=None,
+        default_values={
+            'b': 'hello',
+        },
     ))

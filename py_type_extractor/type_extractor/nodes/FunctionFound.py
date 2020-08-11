@@ -10,6 +10,7 @@ class FunctionFound(BaseNodeType):
     params: Dict[str, NodeType]
     return_type: Any
     func: Optional[Callable] = None
+    default_values: Dict[str, Any] = field(default_factory=dict)
     raw_params: Dict[str, Any] = field(default_factory=dict)
     doc: str = ''
     filePath: str = ''

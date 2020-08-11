@@ -26,11 +26,22 @@ def func_found_middleware(
         module = inspect.getmodule(func)
         filename = module.__file__
         params = type_extractor.params_to_nodes(argspec.annotations, argspec.args)
+        raw_default_values = {
+            key: getattr(signature.parameters.get(key), 'default', None)
+
+            for key in argspec.args
+        }
+        default_values = {
+            key: value
+            for (key, value) in raw_default_values.items()
+            if value is not inspect._empty
+        }
         return_type = type_extractor.rawtype_to_node(signature.return_annotation)
         func_found = FunctionFound(
             name=func.__name__,
             filePath=filename,
             raw_params=argspec.annotations,
+            default_values=default_values,
             params=params,
             doc=func.__doc__ or '',
             func=func,
