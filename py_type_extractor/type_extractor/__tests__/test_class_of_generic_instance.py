@@ -1,20 +1,17 @@
-from py_type_extractor.test_fixtures.generic_classes import (
-    some_func_with_generic_inst,
-    SomeTypeVarA,
-    SomeTypeVarB,
-)
-from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup
+import py_type_extractor.test_fixtures.generic_classes as t
+from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 
+module_name = t.__name__
 
 # noinspection PyPep8Naming
 def test_class_of_generic_instance():
     type_extractor = TypeExtractor()
-    type_extractor.add()(some_func_with_generic_inst)
+    type_extractor.add()(t.some_func_with_generic_inst)
     print(type_extractor)
 
     collected_types = {
@@ -23,13 +20,14 @@ def test_class_of_generic_instance():
     }
     some_typevar_A = TypeVarFound(
         name='SomeTypeVarA',
-        original=SomeTypeVarA,
+        original=t.SomeTypeVarA,
     )
     some_typevar_B = TypeVarFound(
         name='SomeTypeVarB',
-        original=SomeTypeVarB,
+        original=t.SomeTypeVarB,
     )
     some_generic_class = ClassFound(
+        module_name=module_name,
         name='SomeGenericClass',
         fields={
             'a': some_typevar_A,
@@ -41,21 +39,34 @@ def test_class_of_generic_instance():
         ],
     )
     some_class = ClassFound(
+        module_name=module_name,
         name='SomeClass',
         fields={
             'some_property': int,
         }
     )
     assert collected_types[
-       'py_type_extractor.test_fixtures.generic_classes.SomeGenericClass'
+        type_extractor.to_collected_types_key(
+            module_name=module_name,
+            typ_name=t.SomeGenericClass.__qualname__,
+        )
    ] == some_generic_class
 
     assert collected_types[
-       'py_type_extractor.test_fixtures.generic_classes.SomeClass'
+        type_extractor.to_collected_types_key(
+            module_name=module_name,
+            typ_name=t.SomeClass.__qualname__,
+        )
    ] == some_class
 
-    assert collected_types['some_func_with_generic_inst'] == FunctionFound(
+    assert collected_types[
+        type_extractor.to_collected_types_key(
+            module_name=module_name,
+            typ_name=t.some_func_with_generic_inst.__qualname__,
+        )
+    ] == FunctionFound(
         name='some_func_with_generic_inst',
+        module_name=module_name,
         params={
             'input': FixedGenericFound(
                 type_vars=[float, some_class],
@@ -64,4 +75,6 @@ def test_class_of_generic_instance():
         },
         return_type=str,
     )
+
+    hash_test(type_extractor)
 

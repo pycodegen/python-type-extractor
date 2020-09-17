@@ -12,11 +12,17 @@ class FunctionFound(BaseNodeType):
     func: Optional[Callable] = None
     default_values: Dict[str, Any] = field(default_factory=dict)
     raw_params: Dict[str, Any] = field(default_factory=dict)
+    module_name: str = field(default='')
     doc: str = ''
     filePath: str = ''
     INTERNAL_params_extra: Optional[Dict[str, Dict[str, Any]]] = None
     INTERNAL_return_extra: Optional[Dict[str, Any]] = None
     options: Set[BaseOption] = field(default_factory=set)
+
+    def __hash__(self):
+        return hash(FunctionFound)\
+               + hash(self.name)\
+               + hash(self.module_name)
 
 
 def set_params_extra(namespace: str):

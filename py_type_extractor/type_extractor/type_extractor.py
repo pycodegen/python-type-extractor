@@ -3,6 +3,7 @@ import inspect
 from collections import (
     OrderedDict,
 )
+import weakref
 from typing import (
     Callable,
     Dict,

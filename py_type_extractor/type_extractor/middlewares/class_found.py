@@ -1,4 +1,6 @@
 import inspect
+import weakref
+
 import typing_inspect
 
 from dataclasses import dataclass
@@ -7,6 +9,7 @@ from mypy_extensions import _TypedDictMeta  # type: ignore
 from typing import Set, Dict, cast, List, Generic
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
+from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.utils import is_builtin
@@ -27,8 +30,11 @@ def class_found_middleware(
     module_name = module.__name__
 
     name = _class.__qualname__.replace('.<locals>', '')
-
-    duplicate = type_extractor.collected_types.get(f"{module_name}.{name}")
+    collected_types_key = type_extractor.to_collected_types_key(
+        module_name=module_name,
+        typ_name=name,
+    )
+    duplicate = type_extractor.collected_types.get(collected_types_key)
     if duplicate is not None:
         assert isinstance(duplicate, ClassFound) \
                and duplicate.class_raw == _class
@@ -48,24 +54,45 @@ def class_found_middleware(
     argspec = inspect.getfullargspec(_data_class)
 
     filename = module and module.__file__
-    annotations: Dict = getattr(_class, '__annotations__', argspec.annotations)
-    fields = type_extractor.params_to_nodes(annotations, annotations.keys())
-    type_vars = [
-        type_extractor.rawtype_to_node(_typevar)
-        for _typevar in
-        list(typing_inspect.get_parameters(_class))
-    ]
+
     class_found = ClassFound(
         name=name,
         class_raw=_class,
         filePath=filename,
         base_classes=base_classes,
         raw_fields=argspec.annotations,
-        fields=fields,
+        fields={},
+        type_vars=[],
+        module_name=module_name,
+        # fields=fields,
         doc=_class.__doc__,
         options=options,
-        type_vars=type_vars,
+        # type_vars=type_vars,
     )
 
-    type_extractor.collected_types[f"{module_name}.{name}"] = class_found
-    return class_found
+    type_extractor.collected_types[collected_types_key] = class_found
+
+    _annotations: Dict = getattr(_class, '__annotations__', argspec.annotations)
+    annotations = {
+        key: value if type(value) is not str
+        else getattr(module, value)
+        for (key, value) in _annotations.items()
+    }
+
+    fields = type_extractor.params_to_nodes(
+        annotations,
+        cast(List[str], annotations.keys()),
+    )
+    type_vars = cast(
+        List[TypeVarFound],
+        [
+            type_extractor.rawtype_to_node(_typevar)
+            for _typevar in
+            list(typing_inspect.get_parameters(_class))
+        ]
+    )
+
+    class_found.fields = fields
+    class_found.type_vars = type_vars
+
+    return weakref.proxy(class_found)

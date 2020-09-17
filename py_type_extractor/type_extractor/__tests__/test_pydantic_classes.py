@@ -1,16 +1,15 @@
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
-from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup
+from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
-from py_type_extractor.test_fixtures.pydantic_classes import (
-    SomePydanticDataClass,
-    SomePydanticModelClass,
-)
 
+import py_type_extractor.test_fixtures.pydantic_classes as t
+
+module_name = t.__name__
 
 def test_pydantic_classes():
     type_extractor = TypeExtractor()
-    type_extractor.add(None)(SomePydanticModelClass)
-    type_extractor.add(None)(SomePydanticDataClass)
+    type_extractor.add(None)(t.SomePydanticModelClass)
+    type_extractor.add(None)(t.SomePydanticDataClass)
 
     print(type_extractor)
     classes = {
@@ -19,9 +18,13 @@ def test_pydantic_classes():
         if isinstance(value, ClassFound)
     }
     assert classes[
-        'py_type_extractor.test_fixtures.pydantic_classes.SomePydanticDataClass'
+        type_extractor.to_collected_types_key(
+            module_name=module_name,
+            typ_name=t.SomePydanticDataClass.__qualname__,
+        )
     ] == ClassFound(
         name='SomePydanticDataClass',
+        module_name=module_name,
         fields={
             'a': int,
             'b': str,
@@ -29,12 +32,25 @@ def test_pydantic_classes():
     )
 
     assert classes[
-        'py_type_extractor.test_fixtures.pydantic_classes.SomePydanticModelClass'
+        type_extractor.to_collected_types_key(
+            module_name=module_name,
+            typ_name=t.SomePydanticModelClass.__qualname__,
+        )
     ] == ClassFound(
         name='SomePydanticModelClass',
+        module_name=module_name,
         fields={
             'c': int,
             'something': float,
         },
-        base_classes=[classes['pydantic.main.BaseModel']],
+        base_classes=[
+            classes[
+                type_extractor.to_collected_types_key(
+                    module_name='pydantic.main',
+                    typ_name='BaseModel',
+                )
+            ]
+        ]
     )
+
+    hash_test(type_extractor)

@@ -1,4 +1,5 @@
 import inspect
+import weakref
 
 from typing import Set
 
@@ -15,7 +16,10 @@ def func_found_middleware(
     if not inspect.isfunction(func):
         return None
     try:
-        duplicate_func_found = type_extractor.collected_types.get(func.__name__)
+        module = inspect.getmodule(func)
+        module_name = module.__name__
+        collected_types_key = f"{module_name}___{func.__qualname__}"
+        duplicate_func_found = type_extractor.collected_types.get(collected_types_key)
         if duplicate_func_found is not None:
             assert isinstance(duplicate_func_found, FunctionFound) and duplicate_func_found.func == func
             duplicate_func_found.options = duplicate_func_found.options.union(options)
@@ -23,7 +27,7 @@ def func_found_middleware(
 
         argspec = inspect.getfullargspec(func)
         signature = inspect.signature(func)
-        module = inspect.getmodule(func)
+
         filename = module.__file__
         params = type_extractor.params_to_nodes(argspec.annotations, argspec.args)
         raw_default_values = {
@@ -41,6 +45,7 @@ def func_found_middleware(
             name=func.__name__,
             filePath=filename,
             raw_params=argspec.annotations,
+            module_name=module_name,
             default_values=default_values,
             params=params,
             doc=func.__doc__ or '',
@@ -49,7 +54,7 @@ def func_found_middleware(
             options=options,
         )
 
-        type_extractor.collected_types[func_found.name] = func_found
-        return func_found
+        type_extractor.collected_types[collected_types_key] = func_found
+        return weakref.proxy(func_found)
     except Exception as e:
         raise e
