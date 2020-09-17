@@ -5,7 +5,10 @@ from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 from py_type_extractor.type_extractor.nodes.ListFound import ListFound
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
-from py_type_extractor.test_fixtures.func_with_list import func_with_list
+import py_type_extractor.test_fixtures.func_with_list as t
+
+
+module_name = t.__name__
 
 
 @dataclass(frozen=True)
@@ -18,19 +21,26 @@ def test_func_with_list():
 
     type_collector.add(
         options={SomeOption(some_var=3)}
-    )(func_with_list)
+    )(t.func_with_list)
 
     type_collector.add(
         options={SomeOption(some_var=5)}
-    )(func_with_list)
+    )(t.func_with_list)
 
     # assert type_collector.classes == {}
     func_found_cleaned = cleanup(
-        type_collector.collected_types[func_with_list.__qualname__],
+        type_collector.collected_types[
+            type_collector
+                .to_collected_types_key(
+                    module_name=module_name,
+                    typ_name=t.func_with_list.__qualname__,
+                )
+        ],
     )
     assert func_found_cleaned == traverse(
         FunctionFound(
-            name=func_with_list.__qualname__,
+            name=t.func_with_list.__qualname__,
+            module_name=module_name,
             params={
                 'input': ListFound(str),
             },
@@ -39,3 +49,5 @@ def test_func_with_list():
         ),
         cleanup,
     )
+
+    hash(func_found_cleaned)

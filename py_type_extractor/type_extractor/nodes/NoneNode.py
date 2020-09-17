@@ -5,7 +5,8 @@ from .BaseNodeType import BaseNodeType, BaseOption
 
 
 class NoneNode(BaseNodeType):  # type: ignore
-    pass
+    def __hash__(self):
+        return hash(id(NoneNode))
 
 
 none_node = NoneNode()

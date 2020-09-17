@@ -1,21 +1,30 @@
-from py_type_extractor.type_extractor.__tests__.utils import cleanup, traverse
+from py_type_extractor.type_extractor.__tests__.utils import cleanup, traverse, hash_test
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 from py_type_extractor.type_extractor.nodes.LiteralFound import LiteralFound
 from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
-from py_type_extractor.test_fixtures.func_with_literals import func_with_literals
+
+import py_type_extractor.test_fixtures.func_with_literals as t
+
+module_name = t.__name__
 
 
 def test_func_with_list():
     type_collector = TypeExtractor()
 
-    type_collector.add(None)(func_with_literals)
+    type_collector.add(None)(t.func_with_literals)
 
-    original_func_found = type_collector.collected_types[func_with_literals.__qualname__]
+    original_func_found = type_collector.collected_types[
+        type_collector.to_collected_types_key(
+            module_name=module_name,
+            typ_name=t.func_with_literals.__qualname__,
+        )
+    ]
     func_found_cleaned = cleanup(original_func_found)
     expected_func_found_cleaned = traverse(
         FunctionFound(
-            name=func_with_literals.__qualname__,
+            name=t.func_with_literals.__qualname__,
+            module_name=module_name,
             params={
                 'input1': TypeOR(
                     a=LiteralFound('a'),
@@ -49,3 +58,5 @@ def test_func_with_list():
         cleanup,
     )
     assert func_found_cleaned == expected_func_found_cleaned
+
+    hash_test(type_collector)

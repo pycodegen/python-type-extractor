@@ -10,6 +10,10 @@ class BaseTypeExtractor(ABC):
     def __init__(self):
         self.collected_types = dict()
 
+    @staticmethod
+    def to_collected_types_key(module_name, typ_name):
+        return f"{module_name}___{typ_name}"
+
     def params_to_nodes(
             self,
             params: Dict[str, Union[type, None]],

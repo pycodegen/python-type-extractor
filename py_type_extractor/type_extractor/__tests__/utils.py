@@ -2,6 +2,7 @@ from collections import OrderedDict
 from copy import deepcopy, copy
 from typing import Callable
 
+from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.NewType import NewTypeFound
@@ -112,3 +113,10 @@ def cleanup(node: NodeType):
         new_node.raw = None
         return new_node
     return node
+
+def hash_test(type_extractor: BaseTypeExtractor):
+    for (key, value) in type_extractor.collected_types.items():
+        try:
+            hash(value)
+        except Exception as e:
+            raise RuntimeError(f"Hash failed -- couldn't hash {key} of {value}")

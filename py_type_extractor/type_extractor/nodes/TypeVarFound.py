@@ -7,5 +7,5 @@ from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, No
 @dataclass
 class TypeVarFound(BaseNodeType):
     name: str
-    original: TypeVar
+    original: TypeVar  # type:ignore
     type_limits: Optional[List[NodeType]] = None

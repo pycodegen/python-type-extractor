@@ -10,3 +10,8 @@ class MappingFound(BaseNodeType):  # type: ignore
     value: NodeType
 
     options: Set[BaseOption] = field(default_factory=set)
+
+    def __hash__(self):
+        return hash(MappingFound) \
+               + hash(self.key)\
+               + hash(self.value)
