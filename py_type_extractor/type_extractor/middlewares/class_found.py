@@ -6,9 +6,10 @@ import typing_inspect
 from dataclasses import dataclass
 
 from mypy_extensions import _TypedDictMeta  # type: ignore
-from typing import Set, Dict, cast, List, Generic
+from typing import Set, Dict, cast, List, Generic, GenericMeta, Union
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
+from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
@@ -43,13 +44,25 @@ def class_found_middleware(
 
     _data_class = dataclass(_class)
 
-    base_classes = cast(List[ClassFound], [
-        type_extractor.rawtype_to_node(base_cls)
-        for base_cls in list(_class.__bases__)
-        if base_cls is not object and
-           base_cls is not tuple and
-           base_cls is not Generic
-    ])
+    base_classes_raw = typing_inspect.get_generic_bases(_class)
+
+    base_classes = cast(
+        List[Union[ClassFound, FixedGenericFound]],
+        [
+            type_extractor.rawtype_to_node(_parent_class)
+            for _parent_class in base_classes_raw
+            if typing_inspect.get_origin(_parent_class) is not Generic
+        ],
+    )
+
+    if len(base_classes_raw) == 0:
+        base_classes = cast(List[ClassFound], [
+            type_extractor.rawtype_to_node(base_cls)
+            for base_cls in list(_class.__bases__)
+            if base_cls is not object and
+               base_cls is not tuple and
+               base_cls is not Generic
+        ])
 
     argspec = inspect.getfullargspec(_data_class)
 

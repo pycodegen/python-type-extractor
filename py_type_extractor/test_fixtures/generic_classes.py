@@ -4,6 +4,8 @@ SomeTypeVarA = TypeVar('SomeTypeVarA')
 
 SomeTypeVarB = TypeVar('SomeTypeVarB', int, str)
 
+SomeTypeVarC = TypeVar('SomeTypeVarC')
+
 
 class SomeGenericClass(Generic[SomeTypeVarA, SomeTypeVarB]):
     a: SomeTypeVarA
@@ -28,7 +30,8 @@ class SomeClass:
     some_property: int
 
 
+
 def some_func_with_generic_inst(
-    input: SomeGenericClass[float, SomeClass]
+    input: SomeGenericClass[float, SomeClass],
 ) -> str:
     return 'hello'

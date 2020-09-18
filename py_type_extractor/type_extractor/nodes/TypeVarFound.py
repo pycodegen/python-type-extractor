@@ -9,3 +9,9 @@ class TypeVarFound(BaseNodeType):
     name: str
     original: TypeVar  # type:ignore
     type_limits: Optional[List[NodeType]] = None
+
+    def __hash__(self):
+        return hash(TypeVarFound)\
+               + hash(self.name)\
+               + hash(id(self.original)) \
+               + hash(tuple(self.type_limits or []))
