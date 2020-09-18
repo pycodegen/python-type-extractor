@@ -4,10 +4,11 @@ from typing import (
     Dict,
     Any,
     Callable,
-    Set, List,
+    Set, List, Union,
 )
 
 from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 
 
@@ -19,7 +20,7 @@ class ClassFound(BaseNodeType):  # type: ignore
     module_name: str = field(default='')
     raw_fields: Dict[str, Any] = field(default_factory=dict)
     doc: str = field(default='')
-    base_classes: List['ClassFound'] = field(default_factory=list)
+    base_classes: List[Union[FixedGenericFound, 'ClassFound']] = field(default_factory=list)
     type_vars: List[TypeVarFound] = field(default_factory=list)
     class_raw: Optional[type] = None
     INTERNAL_fields_extra: Optional[Dict[str, Any]] = None
