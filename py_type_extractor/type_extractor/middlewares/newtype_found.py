@@ -15,9 +15,9 @@ def newtype_found_middleware(
 ):
     if not inspect.isfunction(typ):
         return None
-    if typ.__module__ is not 'typing':
+    if typ.__module__ != 'typing':
         return None
-    if typ.__code__.co_name is not 'new_type':
+    if typ.__code__.co_name != 'new_type':
         return None
 
     already_found = type_extractor.collected_types.get(typ.__name__)

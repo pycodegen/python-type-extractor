@@ -1,18 +1,16 @@
 import inspect
 import weakref
+from typing import Set, Dict, cast, List, Generic, Union
 
 import typing_inspect
-
 from dataclasses import dataclass
-
 from mypy_extensions import _TypedDictMeta  # type: ignore
-from typing import Set, Dict, cast, List, Generic, GenericMeta, Union
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
-from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
+from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
+from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.utils import is_builtin
 
 
