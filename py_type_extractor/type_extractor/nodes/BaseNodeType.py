@@ -9,6 +9,10 @@ class BaseOption:
 class BaseNodeType:
     options: Set[BaseOption]
 
+    # for de-referencing weakref.proxy
+    def get_self(self):
+        return self
+
 
 NodeType = Union[BaseNodeType, type]
 
