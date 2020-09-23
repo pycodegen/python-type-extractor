@@ -24,5 +24,6 @@ setuptools.setup(
         "mypy",
         "mypy_extensions",
         "dataclasses",
+        "typing_inspect>=0.6.0",
     ],
 )

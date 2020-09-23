@@ -1,0 +1,94 @@
+version: 2
+user.email: devdoomari@gmail.com
+user.name: devdoomari-circlei
+jobs:
+  push_dist:
+    docker:
+      - image: circleci/python:3.6.9
+    steps:
+      - checkout
+      - run:
+          name: Set git username/email
+          command: 'mkdir -p ~/.git && git config --global user.email "devdoomari@gmail.com" && git config --global user.name "devdoomari.circleci"'
+      - restore_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements_dev.txt" }}
+      - run:
+          command: |
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            pip install -r requirements_dev.txt
+      - save_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements_dev.txt" }}
+          paths:
+            - 'venv'
+      - run:
+          name: test
+          command: |
+            source venv/bin/activate
+            pytest
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          key: nvm-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum ".circleci/nvm_env.sh" }}
+      - run:
+          command: |
+            wget https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh -O nvm.sh
+            chmod +x nvm.sh
+            ./nvm.sh
+      - run:
+          command: |
+            source .circleci/nvm_env.sh
+            nvm install 10
+            nvm alias default node
+            npm install -g yarn
+      - save_cache:
+          key: nvm-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum ".circleci/nvm_env.sh" }}
+          paths:
+            - '~/.nvm'
+
+      - restore_cache:
+          key: yarn-{{ .Branch }}-{{ checksum "py_type_extractor/plugins/typescript/yarn.lock" }}
+      - run:
+          command: |
+            source .circleci/nvm_env.sh
+            cd py_codegen/plugins/typescript
+            yarn
+      - save_cache:
+          key: yarn-{{ .Branch }}-{{ checksum "py_type_extractor/plugins/typescript/yarn.lock" }}
+          paths:
+              - 'py_type_extractor/plugins/typescript/node_modules'
+      - run:
+          command: |
+            source venv/bin/activate
+            source .circleci/nvm_env.sh
+            cd py_codegen/plugins/typescript
+            yarn run test
+#      - restore_yarn_cache:
+#          name: Restore Yarn Package Cache
+#          keys:
+#            - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+#            - yarn-packages-{{ .Branch }}
+#            - yarn-packages-master
+#            - yarn-packages-
+#      - run:
+#          name: Install Dependencies
+#          command: yarn install
+#      - save_cache:
+#          name: Save Yarn Package Cache
+#          key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+#          paths:
+#            - node_modules/
+#      - run:
+#          name: build
+#          command: yarn build
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - push_dist:
+          filters:
+            branches:
+              ignore:
+               - /^dist*/
+               - master
