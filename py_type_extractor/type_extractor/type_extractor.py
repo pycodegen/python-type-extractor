@@ -15,6 +15,7 @@ from typing import (
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.middlewares.class_found import class_found_middleware
 from py_type_extractor.type_extractor.middlewares.dict_found import dict_found_middleware
+from py_type_extractor.type_extractor.middlewares.enum_found import enum_found_middleware
 from py_type_extractor.type_extractor.middlewares.fixed_generic_found import fixed_generic_found_middleware
 from py_type_extractor.type_extractor.middlewares.function_found import func_found_middleware
 from py_type_extractor.type_extractor.middlewares.list_found import list_found_middleware
@@ -46,6 +47,7 @@ class TypeExtractor(BaseTypeExtractor):
             BaseNodeType,
         ]
     ] = [
+        enum_found_middleware,
         list_found_middleware,
         typeor_middleware,
         typeddict_found_middleware,

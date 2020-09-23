@@ -4,6 +4,7 @@ from typing import Callable
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
+from py_type_extractor.type_extractor.nodes.EnumFound import EnumFound
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.NewType import NewTypeFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
@@ -20,6 +21,9 @@ traverse_func_type = Callable[
 
 
 def traverse(node: NodeType, func: traverse_func_type):
+    if isinstance(node, EnumFound):
+        enum_found_node = copy(node)
+        return func(enum_found_node)
     if isinstance(node, ClassFound):
         class_found_node = copy(node)
         class_found_node.fields = {
@@ -92,6 +96,12 @@ def cleanup(node: NodeType):
         class_found_node.filePath = ''
         class_found_node.doc = ''
         return class_found_node
+
+    if isinstance(node, EnumFound):
+        enum_found_node = copy(node)
+        enum_found_node.enum_raw = None
+        enum_found_node.filePath = ''
+        return enum_found_node
 
     if isinstance(node, FunctionFound):
         new_params = copy(node.params)
