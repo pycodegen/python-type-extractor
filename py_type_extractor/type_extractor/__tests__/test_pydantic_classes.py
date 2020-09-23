@@ -1,3 +1,4 @@
+from typing import Dict, cast
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
@@ -12,15 +13,18 @@ def test_pydantic_classes():
     type_extractor.add(None)(t.SomePydanticDataClass)
 
     print(type_extractor)
-    classes = {
-        key: traverse(value, cleanup)
-        for (key, value) in type_extractor.collected_types.items()
-        if isinstance(value, ClassFound)
-    }
+    classes = cast(
+        Dict[str, ClassFound],
+        {
+            key: traverse(value, cleanup)
+            for (key, value) in type_extractor.collected_types.items()
+            if isinstance(value, ClassFound)
+        },
+    )
     assert classes[
         type_extractor.to_collected_types_key(
             module_name=module_name,
-            typ_name=t.SomePydanticDataClass.__qualname__,
+            typ_name=t.SomePydanticDataClass.__qualname__,  # type: ignore
         )
     ] == ClassFound(
         name='SomePydanticDataClass',

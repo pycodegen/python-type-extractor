@@ -22,7 +22,7 @@ def class_found_middleware(
     if not inspect.isclass(_class) \
             or is_builtin(_class) \
             or _class is inspect._empty \
-            or isinstance(_class, _TypedDictMeta):
+            or isinstance(_class, _TypedDictMeta):  # type: ignore
         return None
 
     module = inspect.getmodule(_class)
@@ -49,22 +49,22 @@ def class_found_middleware(
         [
             type_extractor.rawtype_to_node(_parent_class)
             for _parent_class in base_classes_raw
-            if typing_inspect.get_origin(_parent_class) is not Generic
+            if typing_inspect.get_origin(_parent_class) is not Generic # type: ignore
         ],
     )
 
     if len(base_classes_raw) == 0:
-        base_classes = cast(List[ClassFound], [
+        base_classes = cast(List[Union[ClassFound, FixedGenericFound]], [
             type_extractor.rawtype_to_node(base_cls)
             for base_cls in list(_class.__bases__)
             if base_cls is not object and
                base_cls is not tuple and
-               base_cls is not Generic
+               base_cls is not Generic  # type: ignore
         ])
 
     argspec = inspect.getfullargspec(_data_class)
 
-    filename = module and module.__file__
+    filename = module and module.__file__ or ''
 
     class_found = ClassFound(
         name=name,
