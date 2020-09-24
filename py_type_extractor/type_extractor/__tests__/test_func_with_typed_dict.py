@@ -12,6 +12,7 @@ def test_func_with_typed_dict():
     type_collector = TypeExtractor()
 
     type_collector.add(None)(func_with_typed_dict)
+    type_collector.add(None)(func_with_typed_dict)
 
     collected_types_key = type_collector.to_collected_types_key(
         module_name=module_name,

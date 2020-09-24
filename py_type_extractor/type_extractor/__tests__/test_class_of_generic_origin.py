@@ -9,6 +9,7 @@ module_name = t.__name__
 def test_class_of_generic_origin():
     type_extractor = TypeExtractor()
     type_extractor.add()(t.SomeGenericClass)
+    type_extractor.add()(t.SomeGenericClass)
     classes = {
         key: traverse(value, cleanup)
         for (key, value) in type_extractor.collected_types.items()

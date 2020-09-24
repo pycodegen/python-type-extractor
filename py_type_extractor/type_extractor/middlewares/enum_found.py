@@ -29,8 +29,8 @@ def enum_found_middleware(
     )
     duplicate = type_extractor.collected_types.get(collected_types_key)
     if duplicate is not None:
-        assert isinstance(duplicate, ClassFound) \
-               and duplicate.class_raw == _typ
+        assert isinstance(duplicate, EnumFound) \
+               and duplicate.enum_raw == _typ
         duplicate.options = duplicate.options.union(options)
         return duplicate
 

@@ -16,6 +16,8 @@ module2_name = t2.__name__
 def test_class_with_generic_instance_and_inheritance():
     type_extractor = TypeExtractor()
     type_extractor.add()(t.SomeGenericInheritanceClass)
+    type_extractor.add()(t.SomeGenericInheritanceClass)
+    type_extractor.add()(t.SomeGenericInheritanceClassWithTypevarsSet)
     type_extractor.add()(t.SomeGenericInheritanceClassWithTypevarsSet)
 
     collected_types = {

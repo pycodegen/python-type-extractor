@@ -11,6 +11,7 @@ def test_enum_class():
     type_extractor = TypeExtractor()
 
     type_extractor.add(None)(t.SomeEnumClass)
+    type_extractor.add(None)(t.SomeEnumClass)
 
     enums = {
         key: traverse(value, cleanup)
