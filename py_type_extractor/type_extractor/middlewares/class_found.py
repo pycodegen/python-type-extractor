@@ -1,6 +1,6 @@
 import inspect
 import weakref
-from typing import Set, Dict, cast, List, Generic, Union
+from typing import Set, Dict, cast, List, Generic, Union, NamedTuple
 
 import typing_inspect
 from dataclasses import dataclass
@@ -49,7 +49,8 @@ def class_found_middleware(
         [
             type_extractor.rawtype_to_node(_parent_class)
             for _parent_class in base_classes_raw
-            if typing_inspect.get_origin(_parent_class) is not Generic # type: ignore
+            if typing_inspect.get_origin(_parent_class) is not Generic  # type: ignore
+            and _parent_class is not NamedTuple
         ],
     )
 
