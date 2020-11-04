@@ -23,7 +23,7 @@ setuptools.setup(
     install_requires=[
         "mypy",
         "mypy_extensions",
-        "dataclasses",
+        "dataclasses; python_version < '3.7.0'",
         "typing_inspect>=0.6.0",
     ],
 )
