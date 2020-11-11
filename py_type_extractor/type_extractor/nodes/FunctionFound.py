@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Callable, Any, Optional, Dict, Set
 
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 
 @dataclass
@@ -66,3 +67,5 @@ def get_return_type_extra(
         return func_found.INTERNAL_return_extra and \
                func_found.INTERNAL_return_extra.get(namespace)
     return __get_return_type_extra
+
+

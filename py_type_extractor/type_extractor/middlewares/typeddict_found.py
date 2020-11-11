@@ -5,7 +5,7 @@ from mypy_extensions import _TypedDictMeta  # type: ignore
 from typing import Set
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.TypedDictFound import TypedDictFound
 
 

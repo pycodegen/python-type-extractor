@@ -24,7 +24,8 @@ from py_type_extractor.type_extractor.middlewares.mapping_found import mapping_f
 from py_type_extractor.type_extractor.middlewares.newtype_found import newtype_found_middleware
 from py_type_extractor.type_extractor.middlewares.tuple_found import tuple_found_middleware
 from py_type_extractor.type_extractor.middlewares.type_or import typeor_middleware
-from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.NoneNode import none_node_middleware
 from py_type_extractor.type_extractor.middlewares.typeddict_found import typeddict_found_middleware
 from py_type_extractor.type_extractor.middlewares.TypeVar import typevar_found_middleware

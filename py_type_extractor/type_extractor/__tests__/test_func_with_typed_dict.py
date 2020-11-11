@@ -1,4 +1,3 @@
-from py_type_extractor.test_fixtures.func_with_typed_dict import func_with_typed_dict
 import py_type_extractor.test_fixtures.func_with_typed_dict as t
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
@@ -11,7 +10,7 @@ module_name = t.__name__
 def test_func_with_typed_dict():
     type_collector = TypeExtractor()
 
-    type_collector.add(None)(func_with_typed_dict)
+    type_collector.add(None)(t.func_with_typed_dict)
 
     collected_types_key = type_collector.to_collected_types_key(
         module_name=module_name,
@@ -22,7 +21,7 @@ def test_func_with_typed_dict():
 
     to_compare_func = traverse(
         FunctionFound(
-            name=func_with_typed_dict.__qualname__,
+            name=t.func_with_typed_dict.__qualname__,
             module_name=module_name,
             params={
                 'input': TypedDictFound(

@@ -34,7 +34,6 @@ def test_func_with_nested_arg_class():
         name='test_func_with_nested_arg_class.ChildClass',
         module_name=module_name,
         fields={
-            'return': None,
             'carg1': str,
         },
         doc='',
@@ -46,7 +45,6 @@ def test_func_with_nested_arg_class():
         module_name=module_name,
         name="test_func_with_nested_arg_class.ParentClass",
         fields={
-            'return': None,
             'parg1': str,
             'parg2': child_class,
         },

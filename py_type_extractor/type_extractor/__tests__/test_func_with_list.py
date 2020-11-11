@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from py_type_extractor.type_extractor.__tests__.utils import cleanup, traverse
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 from py_type_extractor.type_extractor.nodes.ListFound import ListFound
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor

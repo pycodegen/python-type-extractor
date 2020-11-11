@@ -1,10 +1,9 @@
 import inspect
 import weakref
-
 from typing import Set
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 
 
@@ -17,7 +16,9 @@ def func_found_middleware(
         return None
     try:
         module = inspect.getmodule(func)
-        module_name = module.__name__
+        module_name = module.__name__ if module else ''
+        filename = module.__file__ if module else ''
+
         collected_types_key = f"{module_name}___{func.__qualname__}"
         duplicate_func_found = type_extractor.collected_types.get(collected_types_key)
         if duplicate_func_found is not None:
@@ -28,7 +29,7 @@ def func_found_middleware(
         argspec = inspect.getfullargspec(func)
         signature = inspect.signature(func)
 
-        filename = module.__file__
+
         params = type_extractor.params_to_nodes(argspec.annotations, argspec.args)
         raw_default_values = {
             key: getattr(signature.parameters.get(key), 'default', None)

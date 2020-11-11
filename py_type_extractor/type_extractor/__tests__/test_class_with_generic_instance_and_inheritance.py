@@ -1,10 +1,9 @@
-import py_type_extractor.test_fixtures.generic_classes_extended as t
 import py_type_extractor.test_fixtures.generic_classes as t2
-
-from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
+import py_type_extractor.test_fixtures.generic_classes_extended as t
+from py_type_extractor.type_extractor.__tests__.utils.cleanup_node import cleanup
+from py_type_extractor.type_extractor.__tests__.utils.traverse_node import traverse
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
-from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 from py_type_extractor.type_extractor.utils.generics import flatten_generics_inheritance_to

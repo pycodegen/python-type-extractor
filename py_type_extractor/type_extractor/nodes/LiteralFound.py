@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Any, Set
 
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 
 @dataclass

@@ -1,7 +1,8 @@
 from typing import Set
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from .BaseNodeType import BaseNodeType, BaseOption
+from .BaseNodeType import BaseNodeType
+from .BaseOption import BaseOption
 
 
 class NoneNode(BaseNodeType):  # type: ignore

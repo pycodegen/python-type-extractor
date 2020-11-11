@@ -1,10 +1,13 @@
-import py_type_extractor.test_fixtures.generic_classes  as t
-from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
+import py_type_extractor.test_fixtures.generic_classes as t
+from py_type_extractor.type_extractor.__tests__.utils.cleanup_node import cleanup
+from py_type_extractor.type_extractor.__tests__.utils.hash_test import hash_test
+from py_type_extractor.type_extractor.__tests__.utils.traverse_node import traverse
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 
 module_name = t.__name__
+
 
 def test_class_of_generic_origin():
     type_extractor = TypeExtractor()

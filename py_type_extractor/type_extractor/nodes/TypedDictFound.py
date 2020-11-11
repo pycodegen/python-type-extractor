@@ -7,7 +7,8 @@ except:
     from mypy_extensions import _TypedDictMeta  # type: ignore
 
 
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 
 @dataclass

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 import py_type_extractor.test_fixtures.union_type_class as t
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
 from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test

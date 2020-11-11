@@ -2,7 +2,7 @@ from typing import Dict, Set
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.middlewares.__common__ import get_typ_origin, get_typ_args
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.DictFound import DictFound
 from py_type_extractor.type_extractor.nodes.UnknownFound import unknown_found
 

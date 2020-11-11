@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Set
 
-from .BaseNodeType import BaseNodeType, NodeType, BaseOption
+from .BaseNodeType import BaseNodeType, NodeType
+from .BaseOption import BaseOption
 
 
 @dataclass
