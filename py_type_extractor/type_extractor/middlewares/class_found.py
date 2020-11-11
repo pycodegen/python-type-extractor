@@ -1,18 +1,29 @@
 import inspect
 import weakref
-from typing import Set, Dict, cast, List, Generic, Union, NamedTuple
+from typing import Set, Dict, cast, List, Generic, Union, NamedTuple, Tuple, Callable, Any
+from optparse import OptionParser
 
 import typing_inspect
 from dataclasses import dataclass
 from mypy_extensions import _TypedDictMeta  # type: ignore
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
+from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
+from py_type_extractor.type_extractor.nodes.__flags import FromMethod
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.utils import is_builtin
 
+
+def filter_builtin_methods(method: Tuple[str, Any]):
+    (name, maybe_func) = method
+    if name.startswith('__'):
+        return False
+    if not inspect.isfunction(maybe_func):
+        return False
+    return True
 
 def class_found_middleware(
         _class,
@@ -67,12 +78,19 @@ def class_found_middleware(
 
     filename = module and module.__file__ or ''
 
+    # methods_raw = inspect.getmembers(_class, filter_builtin_methods)
+    raw_methods_with_builtins = cast(
+        List[Tuple[str, Callable]],
+        inspect.getmembers(_class, inspect.isfunction),
+    )
+
     class_found = ClassFound(
         name=name,
         class_raw=_class,
         filePath=filename,
         base_classes=base_classes,
         raw_fields=argspec.annotations,
+        methods={},
         fields={},
         type_vars=[],
         module_name=module_name,
@@ -104,7 +122,20 @@ def class_found_middleware(
         ]
     )
 
+    methods: Dict[str, FunctionFound] = {
+        method_name: type_extractor.rawtype_to_node(
+            func, {
+                FromMethod(
+                    method_name=method_name,
+                ),
+            },
+        )
+        for method_name, func in raw_methods_with_builtins
+        if not method_name.startswith('__')
+    }
+
     class_found.fields = fields
     class_found.type_vars = type_vars
+    class_found.methods = methods
 
     return weakref.proxy(class_found)

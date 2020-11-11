@@ -1,9 +1,6 @@
-from dataclasses import dataclass, field
 from typing import Union, Set
 
-
-class BaseOption:
-    pass
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 
 class BaseNodeType:

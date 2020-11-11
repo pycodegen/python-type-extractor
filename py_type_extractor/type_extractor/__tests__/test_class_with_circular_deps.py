@@ -11,5 +11,4 @@ def test_class_of_generic_origin():
     type_extractor.add()(ClassA)
     print(type_extractor)
 
-    #   fixme: circular-dep hash
     hash_test(type_extractor)

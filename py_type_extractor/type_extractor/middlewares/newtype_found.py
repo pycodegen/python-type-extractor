@@ -4,7 +4,7 @@ from typing import Set
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 import typing_inspect
 
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.NewType import NewTypeFound
 
 

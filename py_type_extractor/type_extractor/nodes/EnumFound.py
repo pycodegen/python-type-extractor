@@ -7,7 +7,8 @@ from typing import (
     Set, List, Union,
 )
 
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseNodeType, NodeType
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 

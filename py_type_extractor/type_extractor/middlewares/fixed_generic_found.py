@@ -3,7 +3,7 @@ import typing_inspect
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 
 def fixed_generic_found_middleware(

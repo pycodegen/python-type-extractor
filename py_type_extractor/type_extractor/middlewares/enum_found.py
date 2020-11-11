@@ -4,7 +4,7 @@ import weakref
 from typing import Set, Dict
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.EnumFound import EnumFound, EnumValueTypes
 from py_type_extractor.type_extractor.utils.items_view_to_iterable import items_view_to_iterable

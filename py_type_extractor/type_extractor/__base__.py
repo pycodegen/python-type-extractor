@@ -1,10 +1,11 @@
-from abc import ABC
+import abc
 from typing import Dict, Union, List, Set, Optional
 
-from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType, BaseOption
+from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 
-class BaseTypeExtractor(ABC):
+class BaseTypeExtractor(metaclass=abc.ABCMeta):
     collected_types: Dict[str, NodeType]
 
     def __init__(self):
@@ -14,6 +15,7 @@ class BaseTypeExtractor(ABC):
     def to_collected_types_key(module_name, typ_name):
         return f"{module_name}___{typ_name}"
 
+    @abc.abstractmethod
     def params_to_nodes(
             self,
             params: Dict[str, Union[type, None]],
@@ -21,7 +23,11 @@ class BaseTypeExtractor(ABC):
     ) -> Dict[str, NodeType]:
         pass
 
-    def rawtype_to_node(self, typ) -> NodeType:
+    @abc.abstractmethod
+    def rawtype_to_node(
+            self, typ,
+            options: Optional[Set[BaseOption]] = None,
+    ) -> NodeType:
         pass
 
     def add(

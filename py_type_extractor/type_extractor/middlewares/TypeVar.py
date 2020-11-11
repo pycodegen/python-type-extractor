@@ -2,7 +2,7 @@ import typing_inspect
 from typing import Set
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.nodes.BaseNodeType import BaseOption
+from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 
 
