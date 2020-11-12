@@ -30,7 +30,16 @@ class ClassFound(BaseNodeType):  # type: ignore
     options: Set[BaseOption] = field(default_factory=set)
 
     def __hash__(self):
-        return hash(id(ClassFound)) + hash(self.name) + hash(self.module_name)
+        methods_hash = hash(frozenset([
+            (key, value.get_self())
+            for key, value in self.methods.items()
+        ]))
+        return hash(id(ClassFound)) \
+               + hash(self.name) \
+               + hash(self.module_name) \
+               + methods_hash \
+               + hash(frozenset(self.options)) \
+               + 1
 
 
 def set_fields_extra(namespace: str):

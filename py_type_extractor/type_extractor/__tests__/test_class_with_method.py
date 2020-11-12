@@ -25,15 +25,25 @@ def test_class_with_method():
         module_name=module_name,
         typ_name=t.ClassWithMethod.__qualname__,
     )
+    some_arg_class = ClassFound(
+        fields={
+            'a': int,
+        },
+        module_name=module_name,
+        name=t.SomeArgClass.__qualname__,
+    )
     some_method = FunctionFound(
         name='some_method',
         module_name=module_name,
         params={
-            'arg': int,
+            'arg': some_arg_class,
         },
         return_type=int,
+        options={
+            FromMethod('some_method'),
+        }
     )
-    class_found = ClassFound(
+    class_with_method = ClassFound(
         methods={
             'some_method': some_method,
         },
@@ -41,12 +51,7 @@ def test_class_with_method():
         module_name=module_name,
         name=t.ClassWithMethod.__qualname__,
     )
-    some_method.options = {
-        FromMethod(
-            method_name='some_method',
-        )
-    }
-    assert classes[class_type_key] == class_found
+    assert classes[class_type_key] == class_with_method
     print(type_extractor)
 
     hash_test(type_extractor)
