@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from mypy_extensions import _TypedDictMeta  # type: ignore
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
+from py_type_extractor.type_extractor.middlewares.__common__ import remove_temp_options
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
@@ -38,7 +39,7 @@ def class_found_middleware(
 
     module = inspect.getmodule(_class)
     module_name = module.__name__
-
+    child_options = remove_temp_options(options)
     name = _class.__qualname__.replace('.<locals>', '')
     collected_types_key = type_extractor.to_collected_types_key(
         module_name=module_name,
@@ -58,7 +59,7 @@ def class_found_middleware(
     base_classes = cast(
         List[Union[ClassFound, FixedGenericFound]],
         [
-            type_extractor.rawtype_to_node(_parent_class)
+            type_extractor.rawtype_to_node(_parent_class, options=child_options)
             for _parent_class in base_classes_raw
             if typing_inspect.get_origin(_parent_class) is not Generic  # type: ignore
             and _parent_class is not NamedTuple
@@ -67,7 +68,7 @@ def class_found_middleware(
 
     if len(base_classes_raw) == 0:
         base_classes = cast(List[Union[ClassFound, FixedGenericFound]], [
-            type_extractor.rawtype_to_node(base_cls)
+            type_extractor.rawtype_to_node(base_cls, options=child_options)
             for base_cls in list(_class.__bases__)
             if base_cls is not object and
                base_cls is not tuple and
@@ -116,15 +117,14 @@ def class_found_middleware(
     type_vars = cast(
         List[TypeVarFound],
         [
-            type_extractor.rawtype_to_node(_typevar)
+            type_extractor.rawtype_to_node(_typevar, child_options)
             for _typevar in
             list(typing_inspect.get_parameters(_class))
         ]
     )
-
     methods: Dict[str, FunctionFound] = {
         method_name: type_extractor.rawtype_to_node(
-            func, {
+            func, child_options | {
                 FromMethod(
                     method_name=method_name,
                 ),

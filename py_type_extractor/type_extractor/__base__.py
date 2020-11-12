@@ -20,6 +20,7 @@ class BaseTypeExtractor(metaclass=abc.ABCMeta):
             self,
             params: Dict[str, Union[type, None]],
             param_names_list: List[str],
+            options: Optional[Set[BaseOption]] = None,
     ) -> Dict[str, NodeType]:
         pass
 

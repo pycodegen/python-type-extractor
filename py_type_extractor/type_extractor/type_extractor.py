@@ -78,6 +78,7 @@ class TypeExtractor(BaseTypeExtractor):
             self,
             params: Dict[str, Union[type, None]],
             param_names_list: List[str],
+            options: Optional[Set[BaseOption]] = None,
     ):
         processed_params: OrderedDict[str, NodeType] = OrderedDict()
         banned_words = [
@@ -87,6 +88,7 @@ class TypeExtractor(BaseTypeExtractor):
         for param_name in _param_names_list:
             processed_params[param_name] = self.rawtype_to_node(
                 params.get(param_name) or inspect._empty,  # type: ignore
+                options=options,
             )
         return processed_params
 

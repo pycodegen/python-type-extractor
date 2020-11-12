@@ -21,9 +21,12 @@ class FunctionFound(BaseNodeType):
     options: Set[BaseOption] = field(default_factory=set)
 
     def __hash__(self):
+        print(frozenset(self.options))
         return hash(FunctionFound)\
                + hash(self.name)\
-               + hash(self.module_name)
+               + hash(self.module_name)\
+               + hash(frozenset(self.options))\
+               + 1
 
 
 def set_params_extra(namespace: str):

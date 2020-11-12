@@ -1,7 +1,7 @@
 from typing import Dict, Set
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
-from py_type_extractor.type_extractor.middlewares.__common__ import get_typ_origin, get_typ_args
+from py_type_extractor.type_extractor.middlewares.__common__ import get_typ_origin, get_typ_args, remove_temp_options
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.DictFound import DictFound
 from py_type_extractor.type_extractor.nodes.UnknownFound import unknown_found
@@ -12,11 +12,12 @@ def dict_found_middleware(
         type_extractor: BaseTypeExtractor,
         options: Set[BaseOption],
 ):
+    child_options = remove_temp_options(options)
     if typ == Dict:  # for `Dict`
         return DictFound(
             key=unknown_found,
             value=unknown_found,
-            options=options,
+            options=child_options,
         )
     typ_origin = get_typ_origin(typ)
     if typ_origin is not dict and typ_origin is not Dict:
@@ -28,4 +29,5 @@ def dict_found_middleware(
     return DictFound(
         key=processed_key_typ,
         value=processed_value_typ,
+        options=child_options,
     )

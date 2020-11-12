@@ -7,7 +7,6 @@ from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.EnumFound import EnumFound, EnumValueTypes
-from py_type_extractor.type_extractor.utils.items_view_to_iterable import items_view_to_iterable
 
 
 def enum_found_middleware(
@@ -38,7 +37,7 @@ def enum_found_middleware(
 
     members: Dict[str, EnumValueTypes] = {
         key: enum_member.value
-        for (key, enum_member) in items_view_to_iterable(_typ.__members__.items())
+        for key, enum_member in _typ.__members__.items()
     }
     enum_found = EnumFound(
         name=name,
