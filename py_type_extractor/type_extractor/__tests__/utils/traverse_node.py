@@ -111,8 +111,10 @@ def traverse(
     if isinstance(node, TypeOR):
         typeor_node = func(copy(node), flags)
         already_traversed[node_id] = typeor_node
-        typeor_node.a = traverse(node.a, func, already_traversed, flags)
-        typeor_node.b = traverse(node.b, func, already_traversed, flags)
+        typeor_node.nodes = set([
+            traverse(node_item, func, already_traversed, flags)
+            for node_item in list(node.nodes)
+        ])
         typeor_node.options = new_options
         return typeor_node
 

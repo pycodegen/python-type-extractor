@@ -18,11 +18,14 @@ def test_class_with_union_field():
     type_collector = TypeExtractor()
 
     type_collector.add(None)(t.ClassWithUnionField)
-    type_collector.add({SomeOption(some_var=1)})(t.ClassWithUnionField)
+    type_collector.add({
+        SomeOption(some_var=1),
+    })(t.ClassWithUnionField)
 
     classes = {
         key: traverse(value, cleanup)
-        for (key, value) in type_collector.collected_types.items()
+        for (key, value)
+        in type_collector.collected_types.items()
         if isinstance(value, ClassFound)
     }
     key = type_collector.to_collected_types_key(
@@ -31,11 +34,11 @@ def test_class_with_union_field():
     )
     to_compare = {
         key: ClassFound(
-            name='ClassWithUnionField',
+            name=t.ClassWithUnionField.__qualname__,
             fields={
-                'cwufField1': TypeOR(
-                    a=str, b=int
-                )
+                'cwufField1': TypeOR({
+                    str, int,
+                }),
             },
             module_name=module_name,
             options={SomeOption(some_var=1)},

@@ -7,7 +7,6 @@ from .BaseOption import BaseOption
 
 @dataclass
 class TypeOR(BaseNodeType):  # type: ignore
-    a: NodeType
-    b: NodeType
+    nodes: Set[NodeType]
 
     options: Set[BaseOption] = field(default_factory=set)

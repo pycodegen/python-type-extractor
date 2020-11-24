@@ -7,5 +7,5 @@ from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 
 @dataclass
 class LiteralFound(BaseNodeType):  # type: ignore
-    value: Any
+    values: Set[Any]  # set of values
     options: Set[BaseOption] = field(default_factory=set)

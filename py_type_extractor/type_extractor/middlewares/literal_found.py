@@ -1,11 +1,11 @@
 from typing import Tuple, Set
+
 from typing_extensions import Literal
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
 from py_type_extractor.type_extractor.middlewares.__common__ import get_typ_origin, get_typ_args, remove_temp_options
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.LiteralFound import LiteralFound
-from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
 
 
 def __is_literal_typ(typ_origin):
@@ -28,10 +28,19 @@ def literal_found_middleware(
     return __process_literal_args(get_typ_args(typ), child_options)
 
 
-def __process_literal_args(args: Tuple, options: Set[BaseOption]):
-    current = LiteralFound(args[0], options=options)
-    if __is_literal_typ(get_typ_origin(args[0])):
-        current = __process_literal_args(get_typ_args(args[0]), options)
-    if len(args) == 1:
-        return current
-    return TypeOR(current, __process_literal_args(args[1:], options))
+def __process_literal_args(
+        args: Tuple,
+        options: Set[BaseOption],
+) -> LiteralFound:
+    values = set()
+    for typ in args:
+        typ_origin = get_typ_origin(typ)
+        if __is_literal_typ(typ_origin):
+            typ_literal_found = __process_literal_args(
+                get_typ_args(typ),
+                options,
+            )
+            values.update(typ_literal_found.values)
+        else:
+            values.add(typ)
+    return LiteralFound(values, options)

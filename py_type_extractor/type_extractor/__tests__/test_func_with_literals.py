@@ -9,7 +9,7 @@ import py_type_extractor.test_fixtures.func_with_literals as t
 module_name = t.__name__
 
 
-def test_func_with_list():
+def test_func_with_literals():
     type_collector = TypeExtractor()
 
     type_collector.add(None)(t.func_with_literals)
@@ -26,34 +26,16 @@ def test_func_with_list():
             name=t.func_with_literals.__qualname__,
             module_name=module_name,
             params={
-                'input1': TypeOR(
-                    a=LiteralFound('a'),
-                    b=TypeOR(
-                        a=LiteralFound(1),
-                        b=TypeOR(
-                            a=TypeOR(
-                                a=LiteralFound(2),
-                                b=LiteralFound(3),
-                            ),
-                            b=TypeOR(
-                                a=LiteralFound(True),
-                                b=LiteralFound(3),
-                            ),
-                        ),
-                    ),
-                ),
-                'input2': TypeOR(
-                    a=LiteralFound(1),
-                    b=LiteralFound(None),
-                ),
+                'input1': LiteralFound({
+                    'a', 1, 2, 3, True,
+                }),
+                'input2': LiteralFound({
+                    1, None,
+                }),
             },
-            return_type=TypeOR(
-                a=LiteralFound(True),
-                b=TypeOR(
-                    a=LiteralFound(5),
-                    b=LiteralFound(3),
-                ),
-            )
+            return_type=LiteralFound({
+                True, 3, 5,
+            }),
         ),
         cleanup,
     )
