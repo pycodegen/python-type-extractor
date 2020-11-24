@@ -1,6 +1,8 @@
 from typing import Union
 
 
+class SomeClass:
+    pass
+
 class ClassWithUnionField:
-    # TODO: nested unions not supported yet
-    cwufField1: Union[str, int]
+    cwufField1: Union[SomeClass, Union[int, None]]

@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
 import py_type_extractor.test_fixtures.union_type_class as t
+from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
+from py_type_extractor.type_extractor.nodes.NoneNode import none_node
 from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
-from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, hash_test
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 
 
@@ -12,7 +13,9 @@ from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 class SomeOption(BaseOption):
     some_var: int
 
+
 module_name = t.__name__
+
 
 def test_class_with_union_field():
     type_collector = TypeExtractor()
@@ -32,18 +35,19 @@ def test_class_with_union_field():
         module_name,
         t.ClassWithUnionField.__qualname__
     )
-    to_compare = {
-        key: ClassFound(
-            name=t.ClassWithUnionField.__qualname__,
-            fields={
-                'cwufField1': TypeOR({
-                    str, int,
-                }),
-            },
-            module_name=module_name,
-            options={SomeOption(some_var=1)},
-        )
-    }
-    assert to_compare == classes
+    assert classes[key] == ClassFound(
+        name=t.ClassWithUnionField.__qualname__,
+        fields={
+            'cwufField1': TypeOR({
+                none_node, int, ClassFound(
+                    name=t.SomeClass.__qualname__,
+                    module_name=module_name,
+                    fields={},
+                ),
+            }),
+        },
+        module_name=module_name,
+        options={SomeOption(some_var=1)},
+    )
 
     hash_test(type_collector)

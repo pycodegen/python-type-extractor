@@ -54,7 +54,7 @@ def traverse(
         opt.traverse(func, already_traversed, flags)
         if isinstance(opt, BaseTraversableOption)
         else opt
-        for opt in list(node.options)
+        for opt in list(node.options or set())
     ])
 
     if isinstance(node, EnumFound):
