@@ -1,9 +1,6 @@
+export class ClassWithUnionField {
+	cwufField1: SomeClass | null | undefined | number;
+}
 export class SomeClass {
 
-}
-
-export class ClassWithUnionField {
-   	cwufField1: null | undefined
-		| number
-		| SomeClass;
 }

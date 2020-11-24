@@ -82,8 +82,10 @@ class TypescriptConverter:
         if isinstance(node, TypedDictFound):
             return f"I{node.name}"
         if isinstance(node, TypeOR):
-            return ' | '.join([self.get_identifier(node_item)
-                               for node_item in node.nodes])
+            return ' | '.join(
+                sorted([self.get_identifier(node_item)
+                        for node_item in node.nodes])
+            )
         # FIXME: need to handle type(key) == int / float / etc.
         if isinstance(node, DictFound):
             return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
@@ -94,7 +96,10 @@ class TypescriptConverter:
         if isinstance(node, TupleFound):
             return f"[{', '.join([self.get_identifier(typ) for typ in node.types])}]"
         if isinstance(node, LiteralFound):
-            return self.literal_converter(node.value)
+            return ' | '.join(
+                sorted([self.literal_converter(value)
+                        for value in node.values])
+            )
         if node is unknown_found:
             return "any"
 
