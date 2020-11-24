@@ -82,7 +82,8 @@ class TypescriptConverter:
         if isinstance(node, TypedDictFound):
             return f"I{node.name}"
         if isinstance(node, TypeOR):
-            return f"{self.get_identifier(node.a)} | {self.get_identifier(node.b)}"
+            return ' | '.join([self.get_identifier(node_item)
+                               for node_item in node.nodes])
         # FIXME: need to handle type(key) == int / float / etc.
         if isinstance(node, DictFound):
             return f"{{ [id: string]: {self.get_identifier(node.value)} }}"
