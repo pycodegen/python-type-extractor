@@ -17,6 +17,6 @@ def tuple_found_middleware(
     typ_args = get_typ_args(typ)
     processed_typ = [
         type_extractor.rawtype_to_node(param)
-        for param in typ_args
+        for param in typ_args or []
     ]
     return TupleFound(types=processed_typ)
