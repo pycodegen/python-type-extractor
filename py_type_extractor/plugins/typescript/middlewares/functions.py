@@ -32,7 +32,9 @@ def convert_functionfound(
 ):
     raw_params = {
         key: value if key not in func_found.default_values
-        else TypeOR(a=value, b=none_node)
+        else TypeOR({
+            value, none_node,
+        })
         for (key, value) in func_found.params.items()
     }
     params = convert_params_dict(
