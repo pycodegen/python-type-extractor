@@ -107,7 +107,6 @@ class TypeExtractor(BaseTypeExtractor):
             options: Optional[Set[BaseOption]] = None,
     ):
         def add_decoration(typ):
-            if not is_builtin(typ):
-                self.rawtype_to_node(typ, options or set())
-            return typ
+            return self.rawtype_to_node(typ, options or set())
+
         return add_decoration
