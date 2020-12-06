@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from py_type_extractor.type_extractor.__tests__.utils import cleanup, traverse
+from py_type_extractor.type_extractor.__tests__.utils import cleanup, traverse, hash_test
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 from py_type_extractor.type_extractor.nodes.ListFound import ListFound
@@ -50,4 +50,8 @@ def test_func_with_list():
         cleanup,
     )
 
-    hash(func_found_cleaned)
+    hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_func_with_list()
