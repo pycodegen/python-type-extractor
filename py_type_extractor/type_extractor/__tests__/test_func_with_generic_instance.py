@@ -78,3 +78,6 @@ def test_func_with_generic_instance():
 
     hash_test(type_extractor)
 
+
+if __name__ == '__main__':
+    test_func_with_generic_instance()
