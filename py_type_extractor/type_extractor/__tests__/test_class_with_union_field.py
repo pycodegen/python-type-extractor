@@ -51,3 +51,7 @@ def test_class_with_union_field():
     )
 
     hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_class_with_union_field()
