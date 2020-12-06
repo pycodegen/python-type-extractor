@@ -14,6 +14,7 @@ from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
 from py_type_extractor.type_extractor.nodes.EnumFound import EnumFound
 from py_type_extractor.type_extractor.nodes.FixedGenericFound import FixedGenericFound
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
+from py_type_extractor.type_extractor.nodes.ListFound import ListFound
 from py_type_extractor.type_extractor.nodes.NewType import NewTypeFound
 from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
@@ -118,6 +119,16 @@ def traverse(
         typeor_node.options = new_options
         return typeor_node
 
+    if isinstance(node, ListFound):
+        list_node: ListFound = func(copy(node), flags)
+        already_traversed[node_id] = list_node
+        list_node.typ = traverse(
+            node=list_node.typ,
+            func=func,
+            already_traversed=already_traversed,
+            flags=flags,
+        )
+        return list_node
     if isinstance(node, FixedGenericFound):
         fixed_generic_node = func(copy(node), flags)
         already_traversed[node_id] = fixed_generic_node
