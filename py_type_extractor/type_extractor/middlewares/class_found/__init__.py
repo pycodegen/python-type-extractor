@@ -1,7 +1,6 @@
 import inspect
 import weakref
-from typing import Set, Dict, cast, List, Generic, Union, NamedTuple, Tuple, Callable, Any
-from optparse import OptionParser
+from typing import Set, Dict, cast, List, Generic, Union, NamedTuple, Tuple, Callable
 
 import typing_inspect
 from dataclasses import dataclass
@@ -17,14 +16,6 @@ from py_type_extractor.type_extractor.nodes.__flags import FromMethod
 from py_type_extractor.type_extractor.nodes.TypeVarFound import TypeVarFound
 from py_type_extractor.type_extractor.utils import is_builtin
 
-
-def filter_builtin_methods(method: Tuple[str, Any]):
-    (name, maybe_func) = method
-    if name.startswith('__'):
-        return False
-    if not inspect.isfunction(maybe_func):
-        return False
-    return True
 
 def class_found_middleware(
         _class,

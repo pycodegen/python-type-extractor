@@ -9,6 +9,7 @@ from py_type_extractor.type_extractor.middlewares.__common__ import (
 from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
+from py_type_extractor.type_extractor.nodes.utils.get_self import get_self
 
 
 def typeor_middleware(
@@ -23,9 +24,9 @@ def typeor_middleware(
     types = typing_inspect.get_args(typ)
     nodes: Set[NodeType] = set()
     for typ in types:
-        converted_typ = type_extractor.rawtype_to_node(typ, options)
-        if isinstance(converted_typ, BaseNodeType):
-            converted_typ = converted_typ.get_self()
+        converted_typ = get_self(
+            type_extractor.rawtype_to_node(typ, options),
+        )
         if isinstance(converted_typ, TypeOR):
             nodes.update(converted_typ.nodes)
         else:

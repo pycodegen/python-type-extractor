@@ -3,7 +3,6 @@ import inspect
 from collections import (
     OrderedDict,
 )
-import weakref
 from typing import (
     Callable,
     Dict,
@@ -13,6 +12,7 @@ from typing import (
     Set, Optional)
 
 from py_type_extractor.type_extractor.__base__ import BaseTypeExtractor
+from py_type_extractor.type_extractor.middlewares.TypeVar import typevar_found_middleware
 from py_type_extractor.type_extractor.middlewares.class_found import class_found_middleware
 from py_type_extractor.type_extractor.middlewares.dict_found import dict_found_middleware
 from py_type_extractor.type_extractor.middlewares.enum_found import enum_found_middleware
@@ -22,13 +22,13 @@ from py_type_extractor.type_extractor.middlewares.list_found import list_found_m
 from py_type_extractor.type_extractor.middlewares.literal_found import literal_found_middleware
 from py_type_extractor.type_extractor.middlewares.mapping_found import mapping_found_middleware
 from py_type_extractor.type_extractor.middlewares.newtype_found import newtype_found_middleware
+from py_type_extractor.type_extractor.middlewares.self_referential_found import self_referential_found_middleware
 from py_type_extractor.type_extractor.middlewares.tuple_found import tuple_found_middleware
 from py_type_extractor.type_extractor.middlewares.type_or import typeor_middleware
+from py_type_extractor.type_extractor.middlewares.typeddict_found import typeddict_found_middleware
 from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType, BaseNodeType
 from py_type_extractor.type_extractor.nodes.BaseOption import BaseOption
 from py_type_extractor.type_extractor.nodes.NoneNode import none_node_middleware
-from py_type_extractor.type_extractor.middlewares.typeddict_found import typeddict_found_middleware
-from py_type_extractor.type_extractor.middlewares.TypeVar import typevar_found_middleware
 from py_type_extractor.type_extractor.nodes.UnknownFound import unknown_found
 
 
@@ -64,6 +64,7 @@ class TypeExtractor(BaseTypeExtractor):
         none_node_middleware,
         builtin_middleware,
         typeddict_found_middleware,
+        self_referential_found_middleware,
     ]
 
     collected_types: Dict[str, NodeType]
