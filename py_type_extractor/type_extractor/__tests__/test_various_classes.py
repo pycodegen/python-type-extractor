@@ -64,3 +64,7 @@ def test_various_classes():
     assert (functions_list.__len__() == 0)
 
     hash_test(type_extractor)
+
+
+if __name__ == '__main__':
+    test_various_classes()

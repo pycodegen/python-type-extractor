@@ -62,3 +62,7 @@ def test_classes_with_inheritance():
         ],
     )
     hash_test(type_extractor)
+
+
+if __name__ == '__main__':
+    test_classes_with_inheritance()

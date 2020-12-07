@@ -1,5 +1,6 @@
 import py_type_extractor.test_fixtures.generic_classes as t2
 import py_type_extractor.test_fixtures.generic_classes_extended as t
+from py_type_extractor.type_extractor.__tests__.utils import hash_test
 from py_type_extractor.type_extractor.__tests__.utils.cleanup_node import cleanup
 from py_type_extractor.type_extractor.__tests__.utils.traverse_node import traverse
 from py_type_extractor.type_extractor.nodes.ClassFound import ClassFound
@@ -152,3 +153,8 @@ def test_class_with_generic_instance_and_inheritance():
             type_vars=[float, str]
         )
     ]
+
+    hash_test(type_extractor)
+
+if __name__ == '__main__':
+    test_class_with_generic_instance_and_inheritance()

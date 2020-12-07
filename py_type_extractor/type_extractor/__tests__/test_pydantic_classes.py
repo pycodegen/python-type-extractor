@@ -58,3 +58,7 @@ def test_pydantic_classes():
     )
 
     hash_test(type_extractor)
+
+
+if __name__ == '__main__':
+    test_pydantic_classes()

@@ -11,6 +11,7 @@ import py_type_extractor.test_fixtures.class_with_methods as t
 
 module_name = t.__name__
 
+
 def test_class_with_method():
     type_extractor = TypeExtractor()
     type_extractor.add()(t.ClassWithMethod)
@@ -55,3 +56,7 @@ def test_class_with_method():
     print(type_extractor)
 
     hash_test(type_extractor)
+
+
+if __name__ == '__main__':
+    test_class_with_method()

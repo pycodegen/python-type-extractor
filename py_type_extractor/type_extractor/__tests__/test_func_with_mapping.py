@@ -6,7 +6,8 @@ import py_type_extractor.test_fixtures.func_with_mapping as t
 
 module_name = t.__name__
 
-def test_func_with_tuple():
+
+def test_func_with_mapping():
     type_collector = TypeExtractor()
 
     type_collector.add(None)(t.func_with_mapping)
@@ -32,3 +33,7 @@ def test_func_with_tuple():
     )
 
     hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_func_with_mapping()

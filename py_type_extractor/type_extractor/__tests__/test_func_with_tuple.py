@@ -7,6 +7,7 @@ import py_type_extractor.test_fixtures.func_with_tuple as t
 
 module_name = t.__name__
 
+
 def test_func_with_tuple():
     type_collector = TypeExtractor()
 
@@ -34,3 +35,7 @@ def test_func_with_tuple():
     )
 
     hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_func_with_tuple()

@@ -5,6 +5,8 @@ from py_type_extractor.type_extractor.__tests__.utils import traverse, cleanup, 
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 
 module_name = __name__
+
+
 def test_func_with_nested_arg_class():
 
     type_collector = TypeExtractor()
@@ -57,3 +59,7 @@ def test_func_with_nested_arg_class():
     assert (parent_cleaned == cleanedup)
 
     hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_func_with_nested_arg_class()

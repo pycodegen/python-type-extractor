@@ -59,3 +59,7 @@ def test_newtype():
     )
 
     hash_test(type_extractor)
+
+
+if __name__ == '__main__':
+    test_newtype()

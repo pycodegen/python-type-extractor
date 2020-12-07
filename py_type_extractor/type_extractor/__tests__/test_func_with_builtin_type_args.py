@@ -39,3 +39,7 @@ def test_func_with_builtin_type_args():
     ))
 
     hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_func_with_builtin_type_args()

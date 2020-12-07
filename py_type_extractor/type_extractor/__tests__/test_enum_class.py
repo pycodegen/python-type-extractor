@@ -30,3 +30,7 @@ def test_enum_class():
         name=t.SomeEnumClass.__qualname__,
     )
     hash_test(type_extractor)
+
+
+if __name__ == '__main__':
+    test_enum_class()

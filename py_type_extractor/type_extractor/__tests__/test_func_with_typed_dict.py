@@ -59,3 +59,7 @@ def test_func_with_typed_dict():
     assert cleaned_func == to_compare_func
 
     hash_test(type_collector)
+
+
+if __name__ == '__main__':
+    test_func_with_typed_dict()
